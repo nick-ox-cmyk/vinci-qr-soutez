@@ -8,6 +8,7 @@ function participant(overrides: Partial<ParticipantAgg> & { participantId: strin
     language: "cs",
     answeredCount: 0,
     correctCount: 0,
+    firstAnswerAt: null,
     lastAnswerAt: null,
     registeredAt: new Date("2026-06-01T08:00:00Z"),
     reclaimCount: 0,

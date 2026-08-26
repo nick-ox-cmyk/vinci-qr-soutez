@@ -13,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import type { HistogramBucket, LanguageStat, QuestionStat, TimeBucket } from "@/lib/stats";
+import { formatTime } from "@/lib/format";
 
 // Barvy dle §9 — ne výchozí barvy Recharts.
 const COLOR_BLUE = "#004289";
@@ -105,7 +106,7 @@ export function LanguageChart({ data }: { data: LanguageStat[] }) {
 
 export function TimeSeriesChart({ data }: { data: TimeBucket[] }) {
   const chartData = data.map((d) => ({
-    time: d.bucketStart.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" }),
+    time: formatTime(d.bucketStart),
     count: d.count,
   }));
   return (

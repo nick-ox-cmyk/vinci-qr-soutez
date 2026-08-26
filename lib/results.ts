@@ -12,26 +12,25 @@ export async function getParticipantAggregates(): Promise<ParticipantAgg[]> {
     prisma.participant.findMany({
       include: { employee: { include: { company: true } } },
     }),
+    // Jen počty (správně/celkem) — first/lastAnswerAt už jsou denormalizované
+    // přímo na Participant (aktualizuje je submitAnswer transakčně, viz
+    // B.1), takže tady o ně není potřeba znovu agregovat nad Answer.
     prisma.answer.groupBy({
       by: ["participantId", "isCorrect"],
       _count: { _all: true },
-      _max: { answeredAt: true },
     }),
   ]);
 
-  const byParticipant = new Map<string, { answered: number; correct: number; lastAnswerAt: Date | null }>();
+  const byParticipant = new Map<string, { answered: number; correct: number }>();
   for (const row of answerStats) {
-    const entry = byParticipant.get(row.participantId) ?? { answered: 0, correct: 0, lastAnswerAt: null };
+    const entry = byParticipant.get(row.participantId) ?? { answered: 0, correct: 0 };
     entry.answered += row._count._all;
     if (row.isCorrect) entry.correct += row._count._all;
-    if (row._max.answeredAt && (!entry.lastAnswerAt || row._max.answeredAt > entry.lastAnswerAt)) {
-      entry.lastAnswerAt = row._max.answeredAt;
-    }
     byParticipant.set(row.participantId, entry);
   }
 
   return participants.map((p) => {
-    const agg = byParticipant.get(p.id) ?? { answered: 0, correct: 0, lastAnswerAt: null };
+    const agg = byParticipant.get(p.id) ?? { answered: 0, correct: 0 };
     return {
       participantId: p.id,
       fullName: p.employee.fullName,
@@ -39,7 +38,8 @@ export async function getParticipantAggregates(): Promise<ParticipantAgg[]> {
       language: p.language,
       answeredCount: agg.answered,
       correctCount: agg.correct,
-      lastAnswerAt: agg.lastAnswerAt,
+      firstAnswerAt: p.firstAnswerAt,
+      lastAnswerAt: p.lastAnswerAt,
       registeredAt: p.registeredAt,
       reclaimCount: p.reclaimCount,
     };

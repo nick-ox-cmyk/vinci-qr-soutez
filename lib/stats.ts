@@ -13,6 +13,7 @@ export interface ParticipantAgg {
   language: Language;
   answeredCount: number;
   correctCount: number;
+  firstAnswerAt: Date | null;
   lastAnswerAt: Date | null;
   registeredAt: Date;
   reclaimCount: number;

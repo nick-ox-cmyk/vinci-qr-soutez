@@ -93,6 +93,25 @@ stačí na vyzkoušení celého průchodu appkou. Před ostrou akcí je nahraď 
 
 Token drž v tajnosti — kdokoli s odkazem + heslem uvidí jména a výsledky všech účastníků.
 
+### Časové metriky a rychlost (B)
+
+Kromě počtu správných odpovědí se ukládá i přesný čas každé odpovědi (`Answer.answeredAt`,
+milisekundová přesnost, `timestamptz` — vždy z databáze, nikdy z hodin klienta) a na účastníkovi
+denormalizovaně `firstAnswerAt` / `lastAnswerAt` (aktualizuje je `submitAnswer` transakčně při
+každém zápisu). Nic se nezahazuje ani nepředpočítává natvrdo — přesná definice „rychlostního"
+vyhodnocení ještě nebyla rozhodnutá, takže tabulka pořadí i export nabízí surová data
+(první/poslední odpověď, čistý čas, celkový čas, průměr mezi odpověďmi) a **volitelný** přepínač
+„Zohlednit rychlost" nad tabulkou.
+
+**Férovost:** rychlost je smysluplná jen jako kritérium při shodě v počtu správných odpovědí, ne
+jako samostatné pořadí. Účastníci startují v různou dobu, mají různě daleko mezi QR kódy a
+mezitím pracují — kdo se soutěži věnoval v kuse, má nutně lepší čas než kdo ji prokládal prací.
+Ze stejného důvodu je **čistý čas** (první → poslední odpověď) férovější než **celkový čas** (od
+registrace) jako tie-break: netrestá účastníka, který se zaregistroval brzy ráno a k hledání QR
+kódů se dostal až po obědě. Výchozí pořadí (§7.2) proto zůstává beze změny — vyhrává nejvyšší
+počet správných odpovědí, při shodě dřívější čas poslední odpovědi; „Zohlednit rychlost" jen
+nahradí toto konkrétní kritérium shody čistým časem, nic víc.
+
 ---
 
 ## 5. Co se stane, když…

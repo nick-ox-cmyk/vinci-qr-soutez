@@ -38,13 +38,30 @@ export async function submitAnswer(slug: string, selectedOption: number): Promis
   const isCorrect = parsed.data.selectedOption === question.correctOption;
 
   try {
-    await prisma.answer.create({
-      data: {
-        participantId,
-        questionId: question.id,
-        selectedOption: parsed.data.selectedOption,
-        isCorrect,
-      },
+    // Zápis odpovědi a aktualizace Participant.firstAnswerAt/lastAnswerAt
+    // musí být v JEDNÉ transakci (B.1) — a čas bere transakce vždy z DB
+    // (`answeredAt` je `@default(now())`), nikdy z hodin Node serveru a už
+    // vůbec ne z klienta, který je nedůvěryhodný a dá se zfalšovat.
+    await prisma.$transaction(async (tx) => {
+      const answer = await tx.answer.create({
+        data: {
+          participantId,
+          questionId: question.id,
+          selectedOption: parsed.data.selectedOption,
+          isCorrect,
+        },
+      });
+
+      // COALESCE přímo v SQL — firstAnswerAt se nastaví jen napoprvé,
+      // lastAnswerAt a lastSeenAt vždy na čas TÉTO odpovědi. Jeden atomický
+      // příkaz, žádné dodatečné čtení a žádná závodní podmínka.
+      await tx.$executeRaw`
+        UPDATE "Participant"
+        SET "firstAnswerAt" = COALESCE("firstAnswerAt", ${answer.answeredAt}),
+            "lastAnswerAt" = ${answer.answeredAt},
+            "lastSeenAt" = ${answer.answeredAt}
+        WHERE id = ${participantId}
+      `;
     });
   } catch (err) {
     // Databázový unique constraint (participantId, questionId) je jediná
@@ -59,11 +76,6 @@ export async function submitAnswer(slug: string, selectedOption: number): Promis
     }
     throw err;
   }
-
-  await prisma.participant.update({
-    where: { id: participantId },
-    data: { lastSeenAt: new Date() },
-  });
 
   revalidatePath(`/q/${parsed.data.slug}`);
 

@@ -21,8 +21,7 @@ import {
   TimeSeriesChart,
 } from "@/components/DashboardCharts";
 import { adminLogout } from "@/app/actions/admin";
-
-const dateFormatter = new Intl.DateTimeFormat("cs-CZ", { dateStyle: "short", timeStyle: "short" });
+import { formatDateTime } from "@/lib/format";
 
 export default async function ResultsDashboardPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -44,8 +43,10 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
   const languageStats = computeLanguageStats(participants);
   const timeSeries = computeTimeSeries(answerTimestamps, 15);
 
-  const ranked = rankParticipants(participants).map(({ rank, participant }) => ({ ...participant, rank }));
-  const winner = ranked[0];
+  // Oficiální pořadí (karta vítěze) vždy dle výchozího pravidla (§7.2) —
+  // přepínač „Zohlednit rychlost" v tabulce níže je jen zobrazovací volba
+  // pro admina, nemění, kdo vyhrál.
+  const winner = rankParticipants(participants)[0]?.participant;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
@@ -80,7 +81,7 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
           <p className="text-sm text-vinci-blue-dark">{winner.companyName}</p>
           <p className="mt-2 text-sm text-vinci-blue-dark">
             {winner.correctCount} správných odpovědí
-            {winner.lastAnswerAt ? ` · poslední odpověď ${dateFormatter.format(winner.lastAnswerAt)}` : ""}
+            {winner.lastAnswerAt ? ` · poslední odpověď ${formatDateTime(winner.lastAnswerAt)}` : ""}
           </p>
         </section>
       )}
@@ -133,8 +134,16 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
 
       {/* Celkové pořadí účastníků */}
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-bold text-vinci-blue">Celkové pořadí účastníků</h2>
-        <ParticipantRankingTable rows={ranked} token={token} />
+        <h2 className="mb-1 text-lg font-bold text-vinci-blue">Celkové pořadí účastníků</h2>
+        <p className="mb-3 text-sm text-text-muted">
+          Výchozí pravidlo: nejvyšší počet správných odpovědí, při shodě dřívější čas poslední odpovědi. Rychlost má
+          smysl jen jako kritérium při shodě, ne jako samostatné pořadí — účastníci startují v různou dobu, mají
+          různě daleko mezi QR kódy a mezitím pracují, takže kdo se soutěži věnoval v kuse, má nutně lepší čas než
+          kdo ji prokládal prací. Proto i „Zohlednit rychlost“ níže používá <em>čistý čas</em> (první → poslední
+          odpověď), ne celkový čas od registrace — ten by trestal účastníky, kteří se zaregistrovali brzy ráno a
+          k hledání QR kódů se dostali až odpoledne.
+        </p>
+        <ParticipantRankingTable participants={participants} token={token} />
       </section>
 
       {/* Statistika otázek */}

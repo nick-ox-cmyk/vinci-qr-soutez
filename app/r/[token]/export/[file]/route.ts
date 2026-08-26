@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isValidAdminUrlToken, isAdmin } from "@/lib/session";
 import { getParticipantAggregates, getQuestionAggregates } from "@/lib/results";
-import { rankParticipants, successRate } from "@/lib/scoring";
+import { rankParticipants, successRate, netCompetingTimeMs, totalTimeMs, avgTimeBetweenAnswersMs } from "@/lib/scoring";
 import { computeQuestionStats } from "@/lib/stats";
 import { prisma } from "@/lib/prisma";
 
@@ -20,6 +20,15 @@ function buildCsv(headers: string[], rows: (string | number)[][]): string {
   return BOM + lines.join("\r\n") + "\r\n";
 }
 
+/** Surová data v maximální přesnosti (B.1) — sekundy na 3 desetinná místa, ne zaokrouhleno. */
+function msToSeconds(ms: number | null): string {
+  return ms === null ? "" : (ms / 1000).toFixed(3);
+}
+
+function isoOrEmpty(date: Date | null): string {
+  return date ? date.toISOString() : "";
+}
+
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ token: string; file: string }> }) {
   const { token, file } = await params;
 
@@ -33,7 +42,23 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ tok
     const participants = await getParticipantAggregates();
     const ranked = rankParticipants(participants);
     csv = buildCsv(
-      ["pořadí", "jméno", "firma", "jazyk", "zodpovězeno", "správně", "chybně", "úspěšnost %", "poslední odpověď", "převzetí"],
+      [
+        "pořadí",
+        "jméno",
+        "firma",
+        "jazyk",
+        "zodpovězeno",
+        "správně",
+        "chybně",
+        "úspěšnost %",
+        "registrace (UTC)",
+        "první odpověď (UTC)",
+        "poslední odpověď (UTC)",
+        "čistý čas (s)",
+        "celkový čas (s)",
+        "průměr mezi odpověďmi (s)",
+        "převzetí",
+      ],
       ranked.map(({ rank, participant: p }) => [
         rank,
         p.fullName,
@@ -43,7 +68,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ tok
         p.correctCount,
         p.answeredCount - p.correctCount,
         successRate(p.correctCount, p.answeredCount).toFixed(1),
-        p.lastAnswerAt ? p.lastAnswerAt.toISOString() : "",
+        isoOrEmpty(p.registeredAt),
+        isoOrEmpty(p.firstAnswerAt),
+        isoOrEmpty(p.lastAnswerAt),
+        msToSeconds(netCompetingTimeMs(p)),
+        msToSeconds(totalTimeMs(p)),
+        msToSeconds(avgTimeBetweenAnswersMs(p)),
         p.reclaimCount,
       ])
     );

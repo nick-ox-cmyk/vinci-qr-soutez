@@ -38,15 +38,21 @@ model Employee {
 }
 
 model Participant {
-  id           String   @id @default(cuid())
-  employeeId   String   @unique
-  employee     Employee @relation(fields: [employeeId], references: [id])
-  language     Language // zkopírováno z Employee v okamžiku registrace
-  registeredAt DateTime @default(now())
-  lastSeenAt   DateTime @default(now())
+  id            String    @id @default(cuid())
+  employeeId    String    @unique
+  employee      Employee  @relation(fields: [employeeId], references: [id])
+  language      Language // zkopírováno z Employee v okamžiku registrace
+  registeredAt  DateTime  @default(now()) @db.Timestamptz(3)
+  lastSeenAt    DateTime  @default(now()) @db.Timestamptz(3)
+  // Denormalizováno z Answer, aktualizováno transakčně při zápisu odpovědi
+  // (submitAnswer) — ušetří opakované agregace nad Answer ve výsledcích.
+  // Přesnost na milisekundy záměrně kvůli budoucímu vyhodnocení rychlosti
+  // (metoda vyhodnocení zatím není rozhodnutá — surová data se nezahazují).
+  firstAnswerAt DateTime? @db.Timestamptz(3)
+  lastAnswerAt  DateTime? @db.Timestamptz(3)
   // kolikrát se identita znovu přihlásila na jiném zařízení / po ztrátě cookie
-  reclaimCount Int      @default(0)
-  answers      Answer[]
+  reclaimCount  Int       @default(0)
+  answers       Answer[]
 }
 
 model Question {
@@ -80,7 +86,10 @@ model Answer {
   question       Question    @relation(fields: [questionId], references: [id])
   selectedOption Int // 1 | 2 | 3
   isCorrect      Boolean // spočítáno na serveru při zápisu
-  answeredAt     DateTime    @default(now())
+  // Čas nastavuje výhradně databáze (now()) — nikdy klient a nikdy Node
+  // server clock — a nikdy se nezaokrouhluje na sekundy (B.1: milisekundová
+  // přesnost kvůli budoucímu vyhodnocení rychlosti).
+  answeredAt     DateTime    @default(now()) @db.Timestamptz(3)
 
   // Hlavní ochrana proti opakovanému zodpovězení téže otázky týmž účastníkem.
   @@unique([participantId, questionId])

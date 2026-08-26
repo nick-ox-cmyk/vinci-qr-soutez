@@ -2,9 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { isValidAdminUrlToken, isAdmin } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { successRate } from "@/lib/scoring";
-
-const dateFormatter = new Intl.DateTimeFormat("cs-CZ", { dateStyle: "short", timeStyle: "short" });
+import { successRate, netCompetingTimeMs, totalTimeMs, avgTimeBetweenAnswersMs } from "@/lib/scoring";
+import { formatDateTime, formatDuration } from "@/lib/format";
 
 export default async function ParticipantDetailPage({
   params,
@@ -33,6 +32,13 @@ export default async function ParticipantDetailPage({
 
   const answerByQuestionId = new Map(participant.answers.map((a) => [a.questionId, a]));
   const correctCount = participant.answers.filter((a) => a.isCorrect).length;
+
+  const timingInput = {
+    firstAnswerAt: participant.firstAnswerAt,
+    lastAnswerAt: participant.lastAnswerAt,
+    registeredAt: participant.registeredAt,
+    answeredCount: participant.answers.length,
+  };
 
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
@@ -64,11 +70,30 @@ export default async function ParticipantDetailPage({
           <dt className="text-xs text-text-muted">Převzetí identity</dt>
           <dd className="text-lg font-bold text-vinci-blue">{participant.reclaimCount}</dd>
         </div>
+        <div className="rounded-2xl border border-border bg-surface p-3">
+          <dt className="text-xs text-text-muted">První odpověď</dt>
+          <dd className="text-lg font-bold text-vinci-blue">{formatDateTime(participant.firstAnswerAt)}</dd>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface p-3">
+          <dt className="text-xs text-text-muted">Poslední odpověď</dt>
+          <dd className="text-lg font-bold text-vinci-blue">{formatDateTime(participant.lastAnswerAt)}</dd>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface p-3">
+          <dt className="text-xs text-text-muted">Čistý čas soutěžení</dt>
+          <dd className="text-lg font-bold text-vinci-blue">{formatDuration(netCompetingTimeMs(timingInput))}</dd>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface p-3">
+          <dt className="text-xs text-text-muted">Celkový čas</dt>
+          <dd className="text-lg font-bold text-vinci-blue">{formatDuration(totalTimeMs(timingInput))}</dd>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface p-3 sm:col-span-2">
+          <dt className="text-xs text-text-muted">Průměrný čas mezi odpověďmi</dt>
+          <dd className="text-lg font-bold text-vinci-blue">{formatDuration(avgTimeBetweenAnswersMs(timingInput))}</dd>
+        </div>
       </dl>
 
       <p className="mt-3 text-sm text-text-muted">
-        Registrace: {dateFormatter.format(participant.registeredAt)} · poslední aktivita:{" "}
-        {dateFormatter.format(participant.lastSeenAt)}
+        Registrace: {formatDateTime(participant.registeredAt)} · poslední aktivita: {formatDateTime(participant.lastSeenAt)}
       </p>
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
@@ -95,7 +120,7 @@ export default async function ParticipantDetailPage({
                   <td className="px-3 py-2">{answer ? optionText(answer.selectedOption) : "nezodpovězeno"}</td>
                   <td className="px-3 py-2">{optionText(q.correctOption)}</td>
                   <td className="px-3 py-2 text-center">{answer ? (answer.isCorrect ? "✓" : "✗") : "—"}</td>
-                  <td className="px-3 py-2">{answer ? dateFormatter.format(answer.answeredAt) : "—"}</td>
+                  <td className="px-3 py-2">{formatDateTime(answer?.answeredAt ?? null)}</td>
                 </tr>
               );
             })}

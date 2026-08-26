@@ -70,7 +70,7 @@ describe.skipIf(!hasDb)("submitAnswer — DB integrace", () => {
     await prisma.$disconnect();
   });
 
-  it("saves an answer and computes isCorrect on the server", async () => {
+  it("saves an answer, computes isCorrect on the server, and sets Participant first/lastAnswerAt from the DB-generated timestamp (B.1)", async () => {
     const result = await submitAnswer(slug, 2);
     expect(result.status).toBe("saved");
 
@@ -79,6 +79,11 @@ describe.skipIf(!hasDb)("submitAnswer — DB integrace", () => {
     });
     expect(saved.isCorrect).toBe(true);
     expect(saved.selectedOption).toBe(2);
+
+    const participant = await prisma.participant.findUniqueOrThrow({ where: { id: participantId } });
+    expect(participant.firstAnswerAt?.getTime()).toBe(saved.answeredAt.getTime());
+    expect(participant.lastAnswerAt?.getTime()).toBe(saved.answeredAt.getTime());
+    expect(participant.lastSeenAt.getTime()).toBe(saved.answeredAt.getTime());
   });
 
   it("a second submission for the same question returns already_answered and leaves the DB untouched", async () => {
@@ -121,5 +126,42 @@ describe.skipIf(!hasDb)("submitAnswer — DB integrace", () => {
     await prisma.answer.deleteMany({ where: { questionId: q2.id } });
     await prisma.questionTranslation.deleteMany({ where: { questionId: q2.id } });
     await prisma.question.delete({ where: { id: q2.id } });
+  });
+
+  it("firstAnswerAt stays fixed while lastAnswerAt advances across multiple questions", async () => {
+    const before = await prisma.participant.findUniqueOrThrow({ where: { id: participantId } });
+    const firstAnswerAtBefore = before.firstAnswerAt;
+    expect(firstAnswerAtBefore).not.toBeNull();
+
+    const unique = Date.now();
+    const q3 = await prisma.question.create({
+      data: {
+        number: 700_000 + (unique % 1000),
+        slug: `s${unique.toString(36).slice(-8)}`,
+        correctOption: 1,
+        translations: {
+          create: [
+            { language: "cs", text: "T3?", option1: "a", option2: "b", option3: "c" },
+            { language: "hu", text: "T3?", option1: "a", option2: "b", option3: "c" },
+            { language: "pl", text: "T3?", option1: "a", option2: "b", option3: "c" },
+          ],
+        },
+      },
+    });
+
+    const result = await submitAnswer(q3.slug, 1);
+    expect(result.status).toBe("saved");
+
+    const savedQ3 = await prisma.answer.findUniqueOrThrow({
+      where: { participantId_questionId: { participantId, questionId: q3.id } },
+    });
+    const after = await prisma.participant.findUniqueOrThrow({ where: { id: participantId } });
+
+    expect(after.firstAnswerAt?.getTime()).toBe(firstAnswerAtBefore!.getTime()); // beze změny
+    expect(after.lastAnswerAt?.getTime()).toBe(savedQ3.answeredAt.getTime()); // posunuto na nejnovější
+
+    await prisma.answer.deleteMany({ where: { questionId: q3.id } });
+    await prisma.questionTranslation.deleteMany({ where: { questionId: q3.id } });
+    await prisma.question.delete({ where: { id: q3.id } });
   });
 });
