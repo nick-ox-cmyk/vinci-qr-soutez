@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "VINCI Environment Day — konkurs QR"
+  },
+  "languages": {
+    "cs": "Czeski",
+    "hu": "Węgierski",
+    "pl": "Polski"
+  },
+  "common": {
+    "browserTip": "Wskazówka: otwórz stronę w zwykłej przeglądarce (Chrome / Safari), aby konkurs Ci nie zniknął.",
+    "poweredBy": "VINCI Energies"
+  },
+  "register": {
+    "eyebrow": "Konkurs QR",
+    "heading": "VINCI Environment Day",
+    "intro": "Zeskanowałeś kod QR na wydarzeniu? Najpierw się przedstaw.",
+    "searchLabel": "Znajdź swoje imię",
+    "searchPlaceholder": "Imię i nazwisko…",
+    "searchHint": "Wpisz co najmniej 2 znaki imienia lub nazwiska.",
+    "searchLoading": "Szukam…",
+    "searchEmpty": "Nikogo nie znaleziono.",
+    "notFoundHelp": "Nie znalazłeś swojego imienia? Zgłoś się do organizatora.",
+    "confirmHeading": "Czy to Ty?",
+    "yourLanguage": "Twój język",
+    "confirmButton": "Potwierdź i zacznij",
+    "backButton": "Wróć do wyszukiwania",
+    "gdprNotice": "Twoje imię i odpowiedzi przetwarzamy wyłącznie w celu oceny tego konkursu i usuniemy je w ciągu 30 dni od ogłoszenia wyników.",
+    "welcomeBack": "Witaj z powrotem, kontynuujesz swój konkurs.",
+    "doneTitle": "Jesteś zarejestrowany/a!",
+    "doneBody": "Teraz szukaj kodów QR na terenie firmy i odpowiadaj na pytania."
+  },
+  "question": {
+    "questionLabel": "Pytanie {number}",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Wyślij odpowiedź",
+    "submitting": "Wysyłanie…",
+    "confirmTitle": "Odpowiedzi nie da się już zmienić.",
+    "confirmBody": "Na pewno wysłać?",
+    "confirmCancel": "Anuluj",
+    "confirmSubmit": "Wyślij",
+    "alreadyAnsweredTitle": "Na to pytanie już odpowiedziałeś/aś.",
+    "alreadyAnsweredHint": "Szukaj kolejnego kodu QR.",
+    "savedTitle": "Odpowiedź zapisana.",
+    "savedProgress": "Odpowiedziałeś/aś na {answered} z {total} pytań.",
+    "savedHint": "Kontynuuj poszukiwanie kolejnego kodu QR.",
+    "identifyFirst": "Najpierw się przedstaw",
+    "yourAnswer": "Twoja odpowiedź"
+  },
+  "notFound": {
+    "title": "Strona nie znaleziona",
+    "body": "Ten kod QR nie istnieje albo nie jest już aktywny.",
+    "backHome": "Powrót do strony głównej"
+  }
+}

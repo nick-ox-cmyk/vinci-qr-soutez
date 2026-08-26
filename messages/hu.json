@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "VINCI Environment Day — QR verseny"
+  },
+  "languages": {
+    "cs": "Cseh",
+    "hu": "Magyar",
+    "pl": "Lengyel"
+  },
+  "common": {
+    "browserTip": "Tipp: nyisd meg az oldalt hagyományos böngészőben (Chrome / Safari), hogy a verseny ne tűnjön el.",
+    "poweredBy": "VINCI Energies"
+  },
+  "register": {
+    "eyebrow": "QR verseny",
+    "heading": "VINCI Environment Day",
+    "intro": "Beolvastad a QR kódot a rendezvényen? Először mutatkozz be.",
+    "searchLabel": "Keresd meg a nevedet",
+    "searchPlaceholder": "Vezetéknév és keresztnév…",
+    "searchHint": "Írj be legalább 2 betűt a nevedből vagy vezetéknevedből.",
+    "searchLoading": "Keresés…",
+    "searchEmpty": "Senkit sem találtunk.",
+    "notFoundHelp": "Nem találod a nevedet? Szólj a szervezőnek.",
+    "confirmHeading": "Te vagy az?",
+    "yourLanguage": "A nyelved",
+    "confirmButton": "Megerősítés és kezdés",
+    "backButton": "Vissza a kereséshez",
+    "gdprNotice": "A nevedet és válaszaidat kizárólag a verseny kiértékeléséhez kezeljük, és az eredményhirdetés után 30 napon belül töröljük.",
+    "welcomeBack": "Üdv újra itt, folytatod a versenyt.",
+    "doneTitle": "Sikeresen regisztráltál!",
+    "doneBody": "Most már csak keresd a QR kódokat a cég területén, és válaszolj a kérdésekre."
+  },
+  "question": {
+    "questionLabel": "{number}. kérdés",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Válasz elküldése",
+    "submitting": "Küldés…",
+    "confirmTitle": "A válasz utólag már nem módosítható.",
+    "confirmBody": "Biztosan elküldöd?",
+    "confirmCancel": "Mégse",
+    "confirmSubmit": "Küldés",
+    "alreadyAnsweredTitle": "Erre a kérdésre már válaszoltál.",
+    "alreadyAnsweredHint": "Keresd a következő QR kódot.",
+    "savedTitle": "Válasz mentve.",
+    "savedProgress": "{answered} / {total} kérdésre válaszoltál.",
+    "savedHint": "Folytasd a következő QR kód keresésével.",
+    "identifyFirst": "Először mutatkozz be",
+    "yourAnswer": "A válaszod"
+  },
+  "notFound": {
+    "title": "Az oldal nem található",
+    "body": "Ez a QR kód nem létezik, vagy már nem aktív.",
+    "backHome": "Vissza a kezdőlapra"
+  }
+}

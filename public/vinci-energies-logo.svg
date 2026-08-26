@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40" role="img" aria-label="VINCI Energies">
+  <!--
+    Placeholder wordmark. Nahraď oficiálním logem VINCI Energies z brand
+    manuálu před ostrým nasazením (viz README, §15 bod 5).
+  -->
+  <text x="0" y="28" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#004289">VINCI</text>
+  <text x="82" y="28" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="400" fill="#14213D">Energies</text>
+</svg>

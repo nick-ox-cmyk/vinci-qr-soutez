@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — VINCI Energies / WeNow (§9.1).
+ * Kontrast: --wenow-green má vůči bílé jen ~2,1:1, proto se na zeleném
+ * pozadí používá VÝHRADNĚ tmavý text --vinci-blue-dark (6,6:1). Bílý text
+ * jde jen na --vinci-blue (9,9:1). Cíl je WCAG AA na veškerém textu.
+ */
+:root {
+  --vinci-blue: #004289;
+  --vinci-blue-dark: #002b5c;
+  --vinci-blue-ink: #14213d;
+  --vinci-red: #e2001a;
+
+  --wenow-green: #95c11f;
+  --wenow-green-dark: #7ba318;
+  --wenow-green-soft: #eef6da;
+  --eco-teal: #2db194;
+
+  --surface: #ffffff;
+  --surface-muted: #f5f7fa;
+  --border: #e3e8f0;
+  --text-muted: #6b7a90;
+
+  --background: var(--surface-muted);
+  --foreground: var(--vinci-blue-ink);
+}
+
+@theme inline {
+  --color-vinci-blue: var(--vinci-blue);
+  --color-vinci-blue-dark: var(--vinci-blue-dark);
+  --color-vinci-blue-ink: var(--vinci-blue-ink);
+  --color-vinci-red: var(--vinci-red);
+  --color-wenow-green: var(--wenow-green);
+  --color-wenow-green-dark: var(--wenow-green-dark);
+  --color-wenow-green-soft: var(--wenow-green-soft);
+  --color-eco-teal: var(--eco-teal);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-text-muted: var(--text-muted);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 17px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Inputy min. 16px — jinak iOS Safari při focusu přiblíží stránku (§9.2). */
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+/* 100dvh místo 100vh kvůli adresnímu řádku mobilních prohlížečů (§9.5). */
+.min-h-dscreen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Bezpečná zóna pro tlačítko ukotvené u spodního okraje (§9.5). */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

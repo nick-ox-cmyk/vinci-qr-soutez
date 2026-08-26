@@ -1,0 +1,89 @@
+// VINCI Environment Day — QR soutěž
+// Datový model dle §3 specifikace (PROMPT-vinci-qr-soutez.md)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Language {
+  cs
+  hu
+  pl
+}
+
+model Company {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  employees Employee[]
+}
+
+model Employee {
+  id          String       @id @default(cuid())
+  fullName    String
+  // fullName bez diakritiky, lowercase — pro vyhledávání v našeptávači
+  searchName  String
+  language    Language
+  companyId   String
+  company     Company      @relation(fields: [companyId], references: [id])
+  externalRef String? // volitelné osobní číslo z HR exportu
+  participant Participant?
+
+  @@unique([fullName, companyId])
+  @@index([searchName])
+}
+
+model Participant {
+  id           String   @id @default(cuid())
+  employeeId   String   @unique
+  employee     Employee @relation(fields: [employeeId], references: [id])
+  language     Language // zkopírováno z Employee v okamžiku registrace
+  registeredAt DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  // kolikrát se identita znovu přihlásila na jiném zařízení / po ztrátě cookie
+  reclaimCount Int      @default(0)
+  answers      Answer[]
+}
+
+model Question {
+  id            String                @id @default(cuid())
+  number        Int                   @unique // 1..30, tiskne se na plakát
+  slug          String                @unique // náhodný identifikátor v URL
+  correctOption Int // 1 | 2 | 3
+  active        Boolean               @default(true)
+  translations  QuestionTranslation[]
+  answers       Answer[]
+}
+
+model QuestionTranslation {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  language   Language
+  text       String
+  option1    String
+  option2    String
+  option3    String
+
+  @@unique([questionId, language])
+}
+
+model Answer {
+  id             String      @id @default(cuid())
+  participantId  String
+  participant    Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question    @relation(fields: [questionId], references: [id])
+  selectedOption Int // 1 | 2 | 3
+  isCorrect      Boolean // spočítáno na serveru při zápisu
+  answeredAt     DateTime    @default(now())
+
+  // Hlavní ochrana proti opakovanému zodpovězení téže otázky týmž účastníkem.
+  @@unique([participantId, questionId])
+  @@index([questionId])
+  @@index([participantId])
+}

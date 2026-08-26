@@ -1,0 +1,18 @@
+services:
+  # Lokální Postgres pro vývoj a pro integrační testy (submitAnswer, unique
+  # constraint na (participantId, questionId) atd.). Produkce běží na Neon /
+  # Vercel Postgres (§2), tohle je jen pro `npm run dev` a `npm run test`.
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vinci
+      POSTGRES_PASSWORD: vinci
+      POSTGRES_DB: vinci_qr
+    ports:
+      - "5432:5432"
+    volumes:
+      - vinci_qr_pgdata:/var/lib/postgresql/data
+
+volumes:
+  vinci_qr_pgdata:

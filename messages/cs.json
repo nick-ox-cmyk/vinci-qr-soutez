@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "VINCI Environment Day — QR soutěž"
+  },
+  "languages": {
+    "cs": "Čeština",
+    "hu": "Maďarština",
+    "pl": "Polština"
+  },
+  "common": {
+    "browserTip": "Tip: otevři si stránku v běžném prohlížeči (Chrome / Safari), aby ti soutěž nezmizela.",
+    "poweredBy": "VINCI Energies"
+  },
+  "register": {
+    "eyebrow": "QR soutěž",
+    "heading": "VINCI Environment Day",
+    "intro": "Naskenoval jsi QR kód na akci? Nejdřív se nám ukaž.",
+    "searchLabel": "Najdi svoje jméno",
+    "searchPlaceholder": "Jméno a příjmení…",
+    "searchHint": "Napiš alespoň 2 znaky jména nebo příjmení.",
+    "searchLoading": "Hledám…",
+    "searchEmpty": "Nikoho jsme nenašli.",
+    "notFoundHelp": "Nenašel jsi svoje jméno? Ozvi se organizátorovi.",
+    "confirmHeading": "Jsi to ty?",
+    "yourLanguage": "Tvůj jazyk",
+    "confirmButton": "Potvrdit a začít",
+    "backButton": "Zpět na hledání",
+    "gdprNotice": "Tvoje jméno a odpovědi zpracováváme pouze pro vyhodnocení této soutěže a smažeme je do 30 dnů po vyhlášení výsledků.",
+    "welcomeBack": "Vítej zpět, pokračuješ ve své soutěži.",
+    "doneTitle": "Jsi zaregistrovaný!",
+    "doneBody": "Teď už jen hledej QR kódy po prostorách firmy a odpovídej na otázky."
+  },
+  "question": {
+    "questionLabel": "Otázka {number}",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Odeslat odpověď",
+    "submitting": "Odesílám…",
+    "confirmTitle": "Odpověď už nepůjde změnit.",
+    "confirmBody": "Opravdu odeslat?",
+    "confirmCancel": "Zrušit",
+    "confirmSubmit": "Odeslat",
+    "alreadyAnsweredTitle": "Na tuto otázku už jsi odpověděl(a).",
+    "alreadyAnsweredHint": "Hledej další QR kód.",
+    "savedTitle": "Odpověď uložena.",
+    "savedProgress": "Máš zodpovězeno {answered} z {total} otázek.",
+    "savedHint": "Pokračuj v hledání dalšího QR kódu.",
+    "identifyFirst": "Nejdřív se představ",
+    "yourAnswer": "Tvoje odpověď"
+  },
+  "notFound": {
+    "title": "Stránka nenalezena",
+    "body": "Tenhle QR kód neexistuje nebo už není aktivní.",
+    "backHome": "Zpět na úvod"
+  }
+}
