@@ -34,6 +34,7 @@ export function RegistrationFlow({
 
   const searchDict = getDictionary(switcherLang);
   const activeDict = selected ? getDictionary(selected.language) : searchDict;
+  const activeLang: Language = selected ? selected.language : switcherLang;
 
   async function handleSelect(employee: EmployeeSearchResultDTO) {
     setError(null);
@@ -71,33 +72,35 @@ export function RegistrationFlow({
 
   return (
     <div>
-      {step !== "search" && <SetHtmlLang lang={activeDict === searchDict ? switcherLang : selected!.language} />}
+      <SetHtmlLang lang={activeLang} />
 
       {step === "search" && (
         <div className="space-y-4">
+          {/* Jazyk ještě neznáme — zaměstnance jsme nedohledali (§10). Přepínač
+              patří na obě místa, kde se hledá jméno: registraci i inline
+              identifikaci při ztrátě session na /q/[slug]. */}
+          <div className="flex justify-center gap-2" role="group" aria-label="Jazyk / Nyelv / Język">
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => setSwitcherLang(lang)}
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold uppercase transition-colors ${
+                  switcherLang === lang
+                    ? "bg-vinci-blue text-white"
+                    : "border border-border bg-surface text-vinci-blue-ink"
+                }`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
+
           {mode === "home" && (
-            <>
-              <div className="flex justify-center gap-2" role="group" aria-label="Jazyk / Nyelv / Język">
-                {SUPPORTED_LANGUAGES.map((lang) => (
-                  <button
-                    key={lang}
-                    type="button"
-                    onClick={() => setSwitcherLang(lang)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-semibold uppercase transition-colors ${
-                      switcherLang === lang
-                        ? "bg-vinci-blue text-white"
-                        : "border border-border bg-surface text-vinci-blue-ink"
-                    }`}
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-eco-teal">{searchDict.register.eyebrow}</p>
-                <p className="mt-1 text-vinci-blue-ink">{searchDict.register.intro}</p>
-              </div>
-            </>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-eco-teal">{searchDict.register.eyebrow}</p>
+              <p className="mt-1 text-vinci-blue-ink">{searchDict.register.intro}</p>
+            </div>
           )}
 
           <div>
