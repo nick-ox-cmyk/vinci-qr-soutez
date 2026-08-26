@@ -78,4 +78,33 @@ describe("QuestionView", () => {
 
     await waitFor(() => expect(screen.getByText(dict.question.alreadyAnsweredTitle)).toBeInTheDocument());
   });
+
+  it("shows the completion message instead of the per-question hint once the last question is answered", async () => {
+    submitAnswerMock.mockResolvedValue({ status: "saved", answeredCount: 30, totalQuestions: 30 });
+
+    render(<QuestionView question={question} dict={dict} answeredCount={29} totalQuestions={30} existingAnswer={null} />);
+
+    fireEvent.click(screen.getByText("1 litr"));
+    fireEvent.click(screen.getByRole("button", { name: dict.question.submitButton }));
+    fireEvent.click(screen.getByRole("button", { name: dict.question.confirmSubmit }));
+
+    await waitFor(() => expect(screen.getByText(dict.question.allDoneTitle)).toBeInTheDocument());
+    expect(screen.getByText(dict.question.allDoneBody)).toBeInTheDocument();
+    expect(screen.queryByText(dict.question.savedHint)).not.toBeInTheDocument();
+  });
+
+  it("shows the completion message (not 'find the next QR code') when revisiting an answered question after finishing all of them", () => {
+    render(
+      <QuestionView
+        question={question}
+        dict={dict}
+        answeredCount={30}
+        totalQuestions={30}
+        existingAnswer={{ selectedOption: 1 }}
+      />
+    );
+    expect(screen.getByText(dict.question.alreadyAnsweredTitle)).toBeInTheDocument();
+    expect(screen.getByText(dict.question.allDoneBody)).toBeInTheDocument();
+    expect(screen.queryByText(dict.question.alreadyAnsweredHint)).not.toBeInTheDocument();
+  });
 });

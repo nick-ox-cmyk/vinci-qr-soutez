@@ -44,6 +44,8 @@
     "savedTitle": "Válasz mentve.",
     "savedProgress": "{answered} / {total} kérdésre válaszoltál.",
     "savedHint": "Folytasd a következő QR kód keresésével.",
+    "allDoneTitle": "Minden válaszod el van mentve.",
+    "allDoneBody": "Köszönjük a válaszaidat és az aktivitásodat. A helyes válaszokat a verseny eredményeivel együtt tesszük közzé az Environment Day alkalmából.",
     "identifyFirst": "Először mutatkozz be",
     "yourAnswer": "A válaszod"
   },

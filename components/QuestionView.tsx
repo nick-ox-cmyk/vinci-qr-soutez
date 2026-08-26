@@ -52,8 +52,11 @@ export function QuestionView({
     }
   }
 
+  const showSubmitBar = state === "unanswered" || state === "confirming" || state === "submitting";
+  const isComplete = counts.totalQuestions > 0 && counts.answeredCount >= counts.totalQuestions;
+
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className={`flex flex-1 flex-col gap-4 ${showSubmitBar ? "pb-24" : ""}`}>
       <div>
         <div className="mb-1 flex items-baseline justify-between text-sm font-semibold text-vinci-blue-ink">
           <span>{t(dict, "question.questionLabel", { number: question.number })}</span>
@@ -62,8 +65,8 @@ export function QuestionView({
         <ProgressBar value={counts.answeredCount} max={counts.totalQuestions} label="Progress soutěže" />
       </div>
 
-      <Card roundedCorner className="flex-1 p-6">
-        {(state === "unanswered" || state === "confirming" || state === "submitting") && (
+      <Card className="flex-1 p-6">
+        {showSubmitBar && (
           <div className="flex h-full flex-col gap-6">
             <p className="text-xl font-semibold leading-snug text-vinci-blue-ink sm:text-2xl">{question.text}</p>
 
@@ -80,17 +83,6 @@ export function QuestionView({
             </div>
 
             {error && <p className="text-sm text-vinci-red">{error}</p>}
-
-            <div className="sticky bottom-0 mt-auto -mx-6 -mb-6 border-t border-border bg-surface px-6 py-4 pb-safe">
-              <Button
-                variant="primary"
-                className="w-full"
-                disabled={selected === null || state === "submitting"}
-                onClick={() => setState("confirming")}
-              >
-                {dict.question.submitButton}
-              </Button>
-            </div>
           </div>
         )}
 
@@ -103,7 +95,9 @@ export function QuestionView({
                 <AnswerCard key={opt.value} label={opt.label} selected={selected === opt.value} disabled />
               ))}
             </div>
-            <p className="text-sm text-text-muted">{dict.question.alreadyAnsweredHint}</p>
+            <p className="text-sm text-text-muted">
+              {isComplete ? dict.question.allDoneBody : dict.question.alreadyAnsweredHint}
+            </p>
           </div>
         )}
 
@@ -114,14 +108,38 @@ export function QuestionView({
                 <path d="M5 12.5l4.5 4.5L19 7" stroke="var(--wenow-green-dark)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-vinci-blue">{dict.question.savedTitle}</h2>
-            <p className="text-vinci-blue-ink">
-              {t(dict, "question.savedProgress", { answered: counts.answeredCount, total: counts.totalQuestions })}
-            </p>
-            <p className="text-sm text-text-muted">{dict.question.savedHint}</p>
+            {isComplete ? (
+              <>
+                <h2 className="text-xl font-bold text-vinci-blue">{dict.question.allDoneTitle}</h2>
+                <p className="text-vinci-blue-ink">{dict.question.allDoneBody}</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold text-vinci-blue">{dict.question.savedTitle}</h2>
+                <p className="text-vinci-blue-ink">
+                  {t(dict, "question.savedProgress", { answered: counts.answeredCount, total: counts.totalQuestions })}
+                </p>
+                <p className="text-sm text-text-muted">{dict.question.savedHint}</p>
+              </>
+            )}
           </div>
         )}
       </Card>
+
+      {showSubmitBar && (
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface px-4 pb-safe pt-4 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+          <div className="mx-auto max-w-md pb-4">
+            <Button
+              variant="primary"
+              className="w-full"
+              disabled={selected === null || state === "submitting"}
+              onClick={() => setState("confirming")}
+            >
+              {dict.question.submitButton}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {state === "confirming" && selected !== null && (
         <div className="fixed inset-0 z-30 flex items-end justify-center bg-vinci-blue-ink/40 sm:items-center">

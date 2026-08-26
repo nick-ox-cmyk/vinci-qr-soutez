@@ -44,6 +44,8 @@
     "savedTitle": "Odpověď uložena.",
     "savedProgress": "Máš zodpovězeno {answered} z {total} otázek.",
     "savedHint": "Pokračuj v hledání dalšího QR kódu.",
+    "allDoneTitle": "Všechny odpovědi jsou uloženy.",
+    "allDoneBody": "Děkujeme za odpovědi a tvoji aktivitu. Správné odpovědi zveřejníme společně s výsledky soutěže při příležitosti Environment Day.",
     "identifyFirst": "Nejdřív se představ",
     "yourAnswer": "Tvoje odpověď"
   },

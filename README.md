@@ -177,9 +177,9 @@ vlastní fixtures z `e2e/fixtures/`, ne ostrá data z `data/`) a spuštěné Pla
 4. **Fonty VinciSans / VinciSerif** jsou licencované a v repu nejsou — nahrazeny Source Sans 3 /
    Source Serif 4 (Google Fonts, `latin-ext`). Až klient dodá licencované soubory, stačí upravit
    `app/fonts.ts` na `next/font/local` (viz zakomentovaný příklad přímo v souboru).
-5. **Fotky a loga jsou placeholdery** — `public/wenow-badge.svg`, `public/vinci-energies-logo.svg`
-   a fotografický pás na `/` (aktuálně CSS gradient) je nutné před ostrým nasazením nahradit
-   oficiálními assety z brand manuálu VINCI Energies / dodaných materiálů.
+5. **Logo a favicon** — `public/vinci-energies-logo.svg` a `public/favicon.webp` jsou reálné
+   dodané assety (ne placeholder). Registrační stránka je záměrně čistě formulářová — bez
+   fotografického pásu ani dekorativních odznaků.
 6. **Barvy** (`app/globals.css`, `:root`) jsou odečtené z dodaných PDF (diplom + plakát), ne
    z oficiálního brand manuálu — ideálně před spuštěním ověřit.
 7. **`xlsx` (SheetJS) balíček** má v `npm audit` starší známé nálezy (prototype pollution v

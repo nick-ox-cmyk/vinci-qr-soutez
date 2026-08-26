@@ -44,6 +44,8 @@
     "savedTitle": "Odpowiedź zapisana.",
     "savedProgress": "Odpowiedziałeś/aś na {answered} z {total} pytań.",
     "savedHint": "Kontynuuj poszukiwanie kolejnego kodu QR.",
+    "allDoneTitle": "Wszystkie odpowiedzi zostały zapisane.",
+    "allDoneBody": "Dziękujemy za odpowiedzi i Twoją aktywność. Poprawne odpowiedzi opublikujemy razem z wynikami konkursu przy okazji Environment Day.",
     "identifyFirst": "Najpierw się przedstaw",
     "yourAnswer": "Twoja odpowiedź"
   },

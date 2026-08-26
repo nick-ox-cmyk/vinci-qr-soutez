@@ -4,34 +4,21 @@ import { RegistrationFlow } from "@/components/RegistrationFlow";
 
 export default function HomePage() {
   return (
-    <main className="flex flex-1 flex-col">
-      {/*
-        Fotografický pás — příroda / větrné elektrárny (§9.3). Placeholder
-        gradientem, dokud nedorazí oficiální fotka `public/hero.jpg`
-        z materiálů VINCI (viz README, §15 bod 5).
-      */}
-      <div
-        className="relative h-44 shrink-0 sm:h-56"
-        style={{ background: "linear-gradient(135deg, var(--vinci-blue) 0%, var(--eco-teal) 100%)" }}
-      >
+    <main className="flex flex-1 flex-col items-center justify-center px-4 py-10">
+      <Card className="w-full max-w-md p-6">
         <Image
-          src="/wenow-badge.svg"
-          alt="WeNow — The environment needs all of us"
-          width={96}
-          height={96}
+          src="/vinci-energies-logo.svg"
+          alt="VINCI Energies"
+          width={162}
+          height={43}
           priority
-          className="absolute -bottom-8 right-6 drop-shadow-lg sm:h-28 sm:w-28"
+          className="mx-auto h-auto w-36"
         />
-      </div>
-
-      <div className="flex-1 px-4 pb-10">
-        <Card roundedCorner className="mx-auto -mt-10 max-w-md p-6 pt-8">
-          <h1 className="font-serif text-3xl font-bold text-vinci-blue">VINCI Environment Day</h1>
-          <div className="mt-5">
-            <RegistrationFlow mode="home" />
-          </div>
-        </Card>
-      </div>
+        <h1 className="mt-6 text-center font-serif text-3xl font-bold text-vinci-blue">VINCI Environment Day</h1>
+        <div className="mt-5">
+          <RegistrationFlow mode="home" />
+        </div>
+      </Card>
     </main>
   );
 }

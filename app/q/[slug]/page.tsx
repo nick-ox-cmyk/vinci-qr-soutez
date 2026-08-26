@@ -14,7 +14,7 @@ import { SetHtmlLang } from "@/components/SetHtmlLang";
 function InlineRegisterShell() {
   return (
     <main className="flex flex-1 flex-col px-4 py-8">
-      <Card roundedCorner className="mx-auto w-full max-w-md p-6">
+      <Card className="mx-auto w-full max-w-md p-6">
         <InlineRegister />
       </Card>
     </main>
