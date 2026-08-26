@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   manifest: "/site.webmanifest",
   icons: {
-    icon: "/favicon.webp",
-    apple: "/favicon.webp",
+    icon: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
