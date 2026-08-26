@@ -52,3 +52,4 @@ next-env.d.ts
 
 # generated Prisma client output (kept in node_modules by default; harmless if present)
 
+.neon
