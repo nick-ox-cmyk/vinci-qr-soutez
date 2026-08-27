@@ -17,13 +17,13 @@ test("complete journey: register -> question -> submit -> saved -> already answe
     await expect(page.getByText("Jsi zaregistrovaný!")).toBeVisible();
   });
 
-  await test.step("question page shows state A and progress denominator = 30", async () => {
+  await test.step("question page shows state A and progress denominator = 20", async () => {
     await page.goto(`/q/${slug1}`);
     await expect(page.getByText(/^Otázka 1$/)).toBeVisible();
-    await expect(page.getByText("0 / 30")).toBeVisible();
+    await expect(page.getByText("0 / 20")).toBeVisible();
   });
 
-  await test.step("submit requires a second confirmation, then shows the saved state with 1 / 30", async () => {
+  await test.step("submit requires a second confirmation, then shows the saved state with 1 / 20", async () => {
     await page.getByRole("radio").first().click();
 
     const submitButton = page.getByRole("button", { name: "Odeslat odpověď" });
@@ -35,7 +35,7 @@ test("complete journey: register -> question -> submit -> saved -> already answe
     await page.getByRole("button", { name: "Odeslat", exact: true }).click();
 
     await expect(page.getByText("Odpověď uložena.")).toBeVisible();
-    await expect(page.getByText("Máš zodpovězeno 1 z 30 otázek.")).toBeVisible();
+    await expect(page.getByText("Máš zodpovězeno 1 z 20 otázek.")).toBeVisible();
 
     // Nikdy žádná zpětná vazba o správnosti odpovědi.
     await expect(page.getByText(/správně|špatně|correct/i)).toHaveCount(0);

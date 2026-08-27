@@ -4,7 +4,7 @@ import type { ParticipantAgg, QuestionAgg } from "@/lib/stats";
 
 /**
  * Datová vrstva pro výsledkový dashboard (§7). Agregace píšeme jako
- * `groupBy` dotazy, ne N+1 (§8) — pro ~200 účastníků × 30 otázek jde
+ * `groupBy` dotazy, ne N+1 (§8) — pro tisíce účastníků × 20 otázek jde
  * o hrstku dotazů celkem, ne dotaz na účastníka.
  */
 export async function getParticipantAggregates(): Promise<ParticipantAgg[]> {

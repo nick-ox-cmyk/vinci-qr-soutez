@@ -62,7 +62,7 @@ model Participant {
 
 model Question {
   id            String                @id @default(cuid())
-  number        Int                   @unique // 1..30, tiskne se na plakát
+  number        Int                   @unique // 1..20, tiskne se na plakát
   slug          String                @unique // náhodný identifikátor v URL
   correctOption Int // 1 | 2 | 3
   active        Boolean               @default(true)

@@ -1,9 +1,15 @@
 # ENVI QUIZ — VINCI Energies CEE
 
 Interní webová QR soutěž pro zaměstnance **VINCI Energies CEE** (regionu střední a východní Evropy)
-během akce *Environment Day*. Účastníci naskenují jeden z 30 QR kódů rozvěšených po prostorách
+během akce *Environment Day*. Účastníci naskenují jeden z 20 QR kódů rozvěšených po prostorách
 firmy, odpoví na otázku a sbírají skóre bez jakékoli zpětné vazby o správnosti.
-Plná specifikace: [`PROMPT-vinci-qr-soutez.md`](./PROMPT-vinci-qr-soutez.md).
+Plná specifikace: [`PROMPT-vinci-qr-soutez.md`](./PROMPT-vinci-qr-soutez.md) — pozor, ten dokument
+je původní zadání a v pár detailech je od dohody v tomhle README zastaralý (nejvýrazněji: mluví
+o 30 otázkách, ostrý počet je teď 20 — viz [§10 Doména a nasazení](#10-doména-a-nasazení)).
+
+**Doména**: `enviquiz.com` (potvrzeno, DNS zatím nesměřuje na appku). **Zatím se pořád testuje na
+dočasné `*.vercel.app` adrese** — viz [§10](#10-doména-a-nasazení), než se `enviquiz.com` reálně
+zapojí.
 
 **7 jazyků**: CZ · SK · PL · HU · RO · BG · EN (výchozí). Očekávaný rozsah: až ~4000 účastníků,
 soutěž běží jeden týden s peakem v pondělí — viz [§8 Výkon a zátěž](#8-výkon-a-zátěž-4000-účastníků).
@@ -58,9 +64,10 @@ je nahraď skutečným obsahem — viz [§3 Postup přípravy akce](#3-postup-p�
 2. **Vercel** — importuj repo, nastav environment proměnné (Production i Preview) přesně podle
    `.env.example`: `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_URL_TOKEN`, `ADMIN_PASSWORD`,
    `NEXT_PUBLIC_BASE_URL`.
-3. **Doména** — pokud v době prvního nasazení ještě není vybraná, nastav `NEXT_PUBLIC_BASE_URL` na
-   dočasnou `*.vercel.app` adresu. **QR kódy generuj (`npm run qr`) až po nastavení finální
-   domény** — viz [§15 bod 1](#otevřené-body--vědomé-kompromisy).
+3. **Doména** — je vybraná (`enviquiz.com`), ale zatím se testuje na dočasné `*.vercel.app`
+   adrese. `NEXT_PUBLIC_BASE_URL` zatím nech na `*.vercel.app`. **QR kódy generuj (`npm run qr`)
+   až po přepnutí `NEXT_PUBLIC_BASE_URL` na `enviquiz.com`**, ne dřív — viz
+   [§10 Doména a nasazení](#10-doména-a-nasazení).
 4. **Migrace** — buď spusť `npx prisma migrate deploy` lokálně proti produkční `DATABASE_URL`, nebo
    to zapoj do buildu (`prisma migrate deploy && next build`) v `vercel.json` / build commandu.
 5. Po nasazení proveď [Postup přípravy akce](#3-postup-přípravy-akce) (seed, QR kódy, tisk).
@@ -79,7 +86,7 @@ je nahraď skutečným obsahem — viz [§3 Postup přípravy akce](#3-postup-p�
 3. `npm run seed` — zapíše do DB (idempotentně — jde spouštět opakovaně) a vygeneruje/doplní
    `data/question-slugs.json`. **Tenhle soubor commitni do repa** — je to jediný zdroj pravdy
    pro to, který QR kód vede na kterou otázku, a musí přežít i redeploy.
-4. `npm run qr` — vygeneruje `out/qr/registrace.png`, `out/qr/q-01.png … q-30.png` a kontrolní
+4. `npm run qr` — vygeneruje `out/qr/registrace.png`, `out/qr/q-01.png … q-20.png` a kontrolní
    `out/qr/qr-prehled.csv`. Pak spusť `npm run dev`, otevři `http://localhost:3000/print/qr`
    (jen v dev režimu) a vytiskni přes prohlížeč (Ctrl/Cmd+P → uložit jako PDF nebo rovnou na tiskárnu).
 5. Vylepi QR kódy po prostorách firmy. `out/qr/qr-prehled.csv` použij jako soupis „který kód visí
@@ -132,7 +139,7 @@ nahradí toto konkrétní kritérium shody čistým časem, nic víc.
 | **Někdo naskenuje QR kód mimo časové okno soutěže** | Zobrazí se „MOC BRZY!" (před startem) nebo „Soutěž je ukončena…" (po konci) ve zvoleném jazyce — žádný formulář se nevykreslí, `registerParticipant`/`submitAnswer` navíc odmítnou zápis i při přímém volání (obrana do hloubky). Viz [§9 Časové okno soutěže](#9-časové-okno-soutěže). |
 | **Someone se pokusí soutěžit pod cizím jménem** | Bez PIN kódu to technicky jde (vědomý kompromis, viz níže) — `reclaimCount` ve výsledkové tabulce ukazuje, kolikrát byla identita „převzata" na jiném zařízení; vysoká hodnota je varovný signál. |
 | **Potřebuješ smazat osobní data po akci** | `npm run purge` smaže `Answer` + `Participant` (GDPR, §8). `Employee`/`Company` zůstanou pro případné příští ročníky. |
-| **Potřebuješ přetisknout jen několik plakátů** | Slugy jsou stabilní napříč seedy (`data/question-slugs.json`) — `npm run qr` znovu vygeneruje identické QR kódy, dokud soubor nesmažeš nebo nepoužiješ `npm run seed -- --regenerate-slugs` (velké varování + potvrzení, **rozbije všech 30 vytištěných plakátů**). |
+| **Potřebuješ přetisknout jen několik plakátů** | Slugy jsou stabilní napříč seedy (`data/question-slugs.json`) — `npm run qr` znovu vygeneruje identické QR kódy, dokud soubor nesmažeš nebo nepoužiješ `npm run seed -- --regenerate-slugs` (velké varování + potvrzení, **rozbije všech 20 vytištěných plakátů**). |
 
 ---
 
@@ -242,10 +249,31 @@ tím okamžitě přestanou platit, žádná změna kódu ani redeploy navíc nen
 
 ---
 
+## 10. Doména a nasazení
+
+**Ostrá doména je `enviquiz.com`** (potvrzeno). **Zatím se ale pořád testuje na dočasné
+`https://vinci-qr-soutez.vercel.app`** — appka na `enviquiz.com` zatím neběží, DNS tam zatím
+nemíří. Nikde v kódu se doména netvrdí napevno — všude, kde je potřeba absolutní URL (QR kódy,
+odkazy, generovaný tisk), se čte `NEXT_PUBLIC_BASE_URL` (§2).
+
+**Až bude čas přepnout na `enviquiz.com`:**
+
+1. V DNS `enviquiz.com` nastav CNAME/A záznam podle instrukcí ve Vercelu (Project → Settings →
+   Domains → Add `enviquiz.com`) — ověření domény dělá Vercel, potřebuje k tomu přístup ke
+   správci DNS domény.
+2. Změň `NEXT_PUBLIC_BASE_URL` na `https://enviquiz.com` (Vercel env, Production) a redeploy.
+3. **Teprve pak** spusť `npm run qr` a vytiskni plakáty (§3, krok 4) — pokud se QR kódy vygenerují
+   dřív, na staré `*.vercel.app` URL, budou po přepnutí domény nefunkční a musí se tisknout znovu.
+4. Zvaž, jestli v tu chvíli také smazat `COMPETITION_BYPASS_TOKEN` z env (§9) — na ostré doméně by
+   testovací obchvat časového zámku už neměl existovat.
+
+---
+
 ## Otevřené body / vědomé kompromisy
 
-1. **Doména není vybraná předem** — vše čte `NEXT_PUBLIC_BASE_URL`. QR kódy (`npm run qr`) se
-   proto generují **až po** nasazení na finální doménu, ne dřív.
+1. **Doména (`enviquiz.com`) je vybraná, ale zatím nezapojená** — appka zatím běží na dočasné
+   `*.vercel.app` adrese, vše čte `NEXT_PUBLIC_BASE_URL` (§10). QR kódy (`npm run qr`) se proto
+   generují **až po** přepnutí na `enviquiz.com`, ne dřív.
 2. **Bez PIN/hesla lze technicky soutěžit pod cizím jménem** — vědomé rozhodnutí pro interní akci.
    Detekce přes `reclaimCount` ve výsledkové tabulce.
 3. **Zaměstnanec chybějící v CSV/XLSX** se nezaregistruje — registrační stránka na to má
@@ -263,10 +291,13 @@ tím okamžitě přestanou platit, žádná změna kódu ani redeploy navíc nen
    nepoužívaných cestách) — knihovna se používá jen lokálně v `scripts/` nad důvěryhodnými
    vstupními soubory připravenými organizátorem, ne za běhu aplikace nad veřejným vstupem, takže
    riziko je omezené. Přesto stojí za zvážení před dalším ročníkem zkontrolovat aktuální stav.
-8. **Nové jazyky (SK, RO, BG) — UI texty jsou strojově/AI přeložené**, ne od rodilého mluvčího.
-   Otázky cs/hu/pl mají reálné firemní překlady; sk/ro/bg/en vzorové otázky v `data/` jsou taky jen
-   AI překlad pro účely testování. **Před ostrým seedem nech UI texty (`messages/sk.json`,
-   `messages/ro.json`, `messages/bg.json`) i skutečný obsah otázek zkontrolovat rodilým mluvčím.**
+8. **Nové jazyky (SK, RO, BG) — UI texty jsou strojově/AI přeložené**, ne od rodilého mluvčího
+   (`messages/sk.json`, `messages/ro.json`, `messages/bg.json`). **Vzorové otázky 1–3** v `data/`
+   měly reálné firemní texty (cs/hu/pl) už od začátku, ostatní jazyky u nich jsou AI překlad
+   stejné otázky. **Vzorové otázky 4–20 jsou nově celé vymyšlené AI placeholder** (enviro
+   kvízové fakty) ve všech 7 jazycích — nejsou od klienta ani od překladatele. **Před ostrým
+   seedem nech UI texty i VŠECHNY otázky 1–20 zkontrolovat/nahradit skutečným obsahem a rodilý
+   mluvčí ať zkontroluje SK/RO/BG.**
 9. **`Question.number` a `correctOption` se needitují needitovatelně napříč jazyky** — pokud se
    při doplňování RO/BG/SK/EN překladů omylem prohodí pořadí odpovědí oproti českému vzoru,
    validátor to nepozná (kontroluje jen že pole nejsou prázdná, ne významovou shodu pořadí). Po

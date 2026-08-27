@@ -108,7 +108,7 @@ async function main() {
 
   const questions: Question[] = [];
   for (let n = 1; n <= 30; n++) {
-    const number = 500_000 + n; // mimo rozsah ostrých čísel 1–30
+    const number = 500_000 + n; // mimo rozsah ostrých čísel otázek
     const question = await prisma.question.upsert({
       where: { number },
       create: { number, slug: `loadtest${String(n).padStart(4, "0")}`, correctOption: (n % 3) + 1 },

@@ -1,6 +1,6 @@
 import "dotenv/config";
 import path from "path";
-import { loadSource, LANGUAGE_ORDER } from "./lib/parse";
+import { loadSource, LANGUAGE_ORDER, EXPECTED_QUESTION_COUNT } from "./lib/parse";
 import { validateSource } from "./lib/validate";
 
 const DATA_DIR = process.env.SEED_DATA_DIR ? path.resolve(process.env.SEED_DATA_DIR) : path.join(process.cwd(), "data");
@@ -36,8 +36,10 @@ function main() {
   console.log(`\n✓ Validace v pořádku.`);
   console.log(`  ${companies.size} firem, ${result.employees.length} zaměstnanců (${languageSummary})`);
   console.log(`  ${result.questions.length} otázek, ${result.questions.length * LANGUAGE_ORDER.length} překladů.`);
-  if (result.questions.length !== 30) {
-    console.warn(`  ⚠ Pro 30 QR kódů se očekává 30 otázek, nalezeno ${result.questions.length}.`);
+  if (result.questions.length !== EXPECTED_QUESTION_COUNT) {
+    console.warn(
+      `  ⚠ Pro ${EXPECTED_QUESTION_COUNT} QR kódů se očekává ${EXPECTED_QUESTION_COUNT} otázek, nalezeno ${result.questions.length}.`
+    );
   }
 }
 

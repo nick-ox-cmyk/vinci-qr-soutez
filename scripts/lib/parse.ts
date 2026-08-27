@@ -9,6 +9,9 @@ import { parseDelimited } from "./csv";
 export const LANGUAGE_ORDER = ["cs", "sk", "pl", "hu", "ro", "bg", "en"] as const;
 export type SeedLanguage = (typeof LANGUAGE_ORDER)[number];
 
+/** Celkový počet otázek pro plný ročník (tolik QR plakátů se tiskne). Jen pro `npm run validate`'s hlášku — neomezuje počet řádků, který se skutečně načte. */
+export const EXPECTED_QUESTION_COUNT = 20;
+
 export interface RawEmployeeRow {
   fullName: string;
   language: string;
@@ -77,8 +80,8 @@ function parseQuestionsXlsxSheet(sheet: XLSX.WorkSheet, fileName: string): RawQu
   for (let i = 2; i < rows.length; i++) {
     const r = (rows[i] as unknown[]).map((c) => String(c ?? "").trim());
     const excelRow = i + 1;
-    // Sešit má předvyplněnou kostru 1–30 — prázdný český text otázky (ta je
-    // vždy první blok, "předloha") přeskoč.
+    // Sešit může mít předvyplněnou kostru budoucích otázek — prázdný český
+    // text otázky (ta je vždy první blok, "předloha") přeskoč.
     if (!r[QUESTION_TEXT_START_COLUMN]?.trim()) continue;
     questions.push({
       number: r[0] ?? "",
