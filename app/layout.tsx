@@ -6,7 +6,6 @@ export const metadata: Metadata = {
   title: "ENVI QUIZ — VINCI Energies CEE",
   description: "Interní QR soutěž ENVI QUIZ pro VINCI Energies CEE.",
   robots: { index: false, follow: false },
-  manifest: "/site.webmanifest",
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",

@@ -396,3 +396,10 @@ odkazy, generovaný tisk), se čte `NEXT_PUBLIC_BASE_URL` (§2).
    při doplňování RO/BG/SK/EN překladů omylem prohodí pořadí odpovědí oproti českému vzoru,
    validátor to nepozná (kontroluje jen že pole nejsou prázdná, ne významovou shodu pořadí). Po
    doplnění nových jazyků udělej ruční kontrolu na pár náhodných otázkách.
+10. **Appka schválně není PWA** — dřívější `public/site.webmanifest` a odkaz na něj v
+    `app/layout.tsx` byly odstraněny, protože Chrome na mobilu díky nim nabízel „Přidat na plochu"
+    (instalaci appky) — u interní krátkodobé soutěže je to zbytečné rozptýlení a možný zdroj
+    problémů (zastaralá nainstalovaná verze v cache, matoucí ikonka na ploše po skončení akce).
+    Favicon (`public/favicon.png`) a `theme-color` v `app/layout.tsx` zůstávají, ty install prompt
+    nespouští. Pokud by PWA chování bylo v budoucnu žádoucí, manifest a link v `layout.tsx` stačí
+    vrátit zpět — nic dalšího na to appka nepotřebuje.

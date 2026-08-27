@@ -1,9 +1,0 @@
-{
-  "name": "ENVI QUIZ — VINCI Energies CEE",
-  "short_name": "ENVI QUIZ",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#004289",
-  "icons": [{ "src": "/favicon.png", "sizes": "180x180", "type": "image/png" }]
-}
