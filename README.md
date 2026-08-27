@@ -18,6 +18,96 @@ Stack: **Next.js 15 (App Router) · TypeScript · Prisma + PostgreSQL (Neon) · 
 
 ---
 
+## 0. Předání projektu — přečti si tohle jako první
+
+Tuhle sekci čti, pokud přebíráš projekt (nasazení, doména, případně škálování databáze) a nebyl jsi
+u toho, jak vznikal. Zbytek README je referenční dokumentace k appce samotné — tahle sekce je jen
+orientace „kde co je" a „co ještě zbývá udělat".
+
+### Kde je co (přístupy)
+
+| Co | Kde | Poznámka |
+|---|---|---|
+| **Kód** | [github.com/nick-ox-cmyk/vinci-qr-soutez](https://github.com/nick-ox-cmyk/vinci-qr-soutez), větev `main` | Nasazuje se přímo z `main` (žádný staging branch). |
+| **Hosting** | Vercel, projekt `vinci-qr-soutez` (team `nick-coxs-projects-c657872a`) | Aktuální produkční adresa (dočasná, ne ostrá doména): `https://vinci-qr-soutez.vercel.app`. Pokud v týmu ještě nejsi, vyžádej si pozvánku od zadavatele. |
+| **Databáze** | Neon, projekt `vinci-qr-soutez` (id `snowy-frog-38149029`, region `aws-eu-central-1`) | Serverless Postgres s branchingem — viz [§8](#8-výkon-a-zátěž-4000-účastníků) k plánu/škálování. |
+| **Doména** | `enviquiz.com` | Vlastní zadavatel, DNS zatím nesměřuje na appku — postup napojení je celý v [§10](#10-doména-a-nasazení). |
+| **Tajné hodnoty (secrets)** | Vercel → Project → Settings → Environment Variables (Production) | Aktuálně nastaveno: `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_URL_TOKEN`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_BASE_URL`, `COMPETITION_BYPASS_TOKEN`. Skutečné hodnoty nejsou nikde v repu (`.env` je v `.gitignore`) — stáhni je přes `vercel env pull .env.local` (potřebuješ přístup do Vercel týmu) nebo si vyžádej od zadavatele. |
+| **Dotazy k obsahu/rozhodnutím** | Daniel (zadavatel), `daniel.kokes@gmail.com` | Zejména cokoliv kolem otevřených bodů níže — placeholder otázky, termín akce, kontaktní e-mail v appce (`thavlickova@vinci-energies.cz`, viz [§5](#5-co-se-stane-když)). |
+
+### Rychlý start
+
+```bash
+git clone https://github.com/nick-ox-cmyk/vinci-qr-soutez.git
+cd vinci-qr-soutez
+npm install
+npx vercel link              # napoj lokální repo na Vercel projekt (potřebuje přístup do týmu)
+npx vercel env pull .env.local
+npm run dev                  # http://localhost:3000
+```
+
+Pokud přístup do Vercelu ještě nemáš, postupuj podle [§1 Lokální spuštění](#1-lokální-spuštění) —
+založ si `.env` ručně (lokální Postgres přes `docker compose up -d` stačí na vyzkoušení celého
+průchodu appkou, není potřeba mít hned přístup k ostré databázi).
+
+### Tři úkoly, které tě pravděpodobně čekají
+
+1. **Nasazení / redeploy** — `npx vercel deploy --prod` (nebo přes GitHub integraci, pokud ji
+   zadavatel zapnul — pak stačí push do `main`). Build spouští `prisma generate && next build`
+   (viz `package.json`), migrace do produkční DB je potřeba pustit zvlášť —
+   `npx prisma migrate deploy` proti produkční `DATABASE_URL` (§2, krok 4).
+2. **Napojení domény `enviquiz.com`** — celý postup je hotový checklist v
+   [§10 Doména a nasazení](#10-doména-a-nasazení). Klíčové pořadí: DNS → `NEXT_PUBLIC_BASE_URL` →
+   redeploy → **teprve pak** `npm run qr` (jinak se QR kódy vytisknou se špatnou doménou).
+3. **Škálování databáze, pokud current tier nestačí** — nejdřív zkontroluj
+   [`docs/LOAD-TEST.md`](./docs/LOAD-TEST.md) (zátěžový test na ~4000 účastníků + konkrétní
+   doporučení). Prakticky:
+   - **Výkon/kapacita** (appka je pomalá nebo padá pod zátěží, ne že by chyběla data) → Neon
+     Console → project `vinci-qr-soutez` → Compute → zvyš `autoscalingLimitMaxCu` a/nebo vypni
+     scale-to-zero na dobu akce. Nejde o změnu schématu ani kódu, jen o nastavení instance.
+   - **Struktura dat nestačí** (potřeba nové pole/tabulka) → uprav `prisma/schema.prisma`, lokálně
+     `npx prisma migrate dev --name <popis>` (vytvoří migraci v `prisma/migrations/`), ověř na
+     Neon **branchi** (`npx neon branches create`, ne rovnou na produkci), pak
+     `npx prisma migrate deploy` proti produkční `DATABASE_URL`. Nikdy needituj schéma přímo přes
+     Neon Console SQL editor bez odpovídající Prisma migrace — příští `migrate deploy` by pak
+     spadl na nesouladu.
+   - **Free/nejnižší Neon tier přestává stačit úplně** (ne jen potřebuje jiné nastavení) → upgrade
+     plánu se dělá v Neon Console → Billing, connection string (`DATABASE_URL`) se nemění, appka
+     nepozná rozdíl, stačí redeploy není potřeba vůbec.
+
+### Než appka půjde ostro — konsolidovaný checklist
+
+Detaily jsou v [„Otevřené body / vědomé kompromisy"](#otevřené-body--vědomé-kompromisy) na konci
+tohoto souboru, tady je jen pořadí, ve kterém to dává smysl řešit:
+
+1. Zkontrolovat/nahradit otázky 4–20 (AI placeholder, viz bod 8 níže) a UI překlady pro SK/RO/BG
+   (AI překlad, ne rodilý mluvčí).
+2. Napojit `enviquiz.com` (viz úkol 2 výše).
+3. `npm run qr` na ostré doméně → vytisknout a rozvěsit plakáty.
+4. `npm run purge` — smazat testovací registrace nasbírané během vývoje/testování (v produkční DB
+   jich v době předání bylo 7, jména z ukázkových dat jako „Jan Novák" — `Employee`/`Company`
+   zůstanou, mažou se jen `Participant`/`Answer`, viz [§5](#5-co-se-stane-když)).
+5. Smazat `COMPETITION_BYPASS_TOKEN` z Vercel env (§9) — bez něj přestane fungovat i stará bypass
+   cookie u kohokoli, kdo appku předtím testoval.
+6. Zvážit navýšení Neon compute/autoscaling na dobu akce (úkol 3 výše).
+
+### Užitečné příkazy
+
+| Příkaz | Co dělá |
+|---|---|
+| `npm run dev` | Lokální vývojový server |
+| `npm run build` | Produkční build (stejný, jaký pouští Vercel) |
+| `npm test` / `npm run test:e2e` | Vitest / Playwright — viz [§6](#6-testy) |
+| `npm run validate` | Zkontroluje `data/*.csv`/`*.xlsx` bez zápisu do DB |
+| `npm run seed` | Zapíše zaměstnance/otázky do DB, vygeneruje `data/question-slugs.json` |
+| `npm run qr` | Vygeneruje QR kódy (PNG + SVG s místem na logo) z `NEXT_PUBLIC_BASE_URL` |
+| `npm run purge` | Smaže `Participant`/`Answer` (GDPR úklid po akci) |
+| `npm run load-test` | Zátěžový test proti (ideálně) izolované Neon větvi, viz `docs/LOAD-TEST.md` |
+| `npx prisma studio` | Vizuální prohlížeč obsahu databáze |
+| `npx vercel deploy --prod` | Ruční nasazení na produkci |
+
+---
+
 ## 1. Lokální spuštění
 
 ### Předpoklady
@@ -87,8 +177,12 @@ je nahraď skutečným obsahem — viz [§3 Postup přípravy akce](#3-postup-p�
    `data/question-slugs.json`. **Tenhle soubor commitni do repa** — je to jediný zdroj pravdy
    pro to, který QR kód vede na kterou otázku, a musí přežít i redeploy.
 4. `npm run qr` — vygeneruje `out/qr/registrace.png`, `out/qr/q-01.png … q-20.png` a kontrolní
-   `out/qr/qr-prehled.csv`. Pak spusť `npm run dev`, otevři `http://localhost:3000/print/qr`
-   (jen v dev režimu) a vytiskni přes prohlížeč (Ctrl/Cmd+P → uložit jako PDF nebo rovnou na tiskárnu).
+   `out/qr/qr-prehled.csv`. Vedle toho i vektorovou variantu `out/qr/svg/*.svg` — **se schváleným
+   volným místem uprostřed na logo** VINCI Energies (klient si logo doplňuje sám v grafickém
+   programu; rozměr díry je `LOGO_HOLE_FRACTION` v `scripts/qr.ts`, 30 % šířky kódu, uvnitř
+   bezpečné rezervy korekce chyb H). Pak spusť `npm run dev`, otevři `http://localhost:3000/print/qr`
+   (jen v dev režimu) a vytiskni přes prohlížeč (Ctrl/Cmd+P → uložit jako PDF nebo rovnou na tiskárnu) —
+   nebo si plakát vysaď vlastním grafickým layoutem kolem `out/qr/svg/*.svg`.
 5. Vylepi QR kódy po prostorách firmy. `out/qr/qr-prehled.csv` použij jako soupis „který kód visí
    kde" (dopiš si k němu lokaci). K primárnímu QR kódu na plakátu přidej i **krátkou textovou URL**
    pro ruční zadání — QR čtečky v in-app prohlížečích někdy neudrží cookies mezi skeny (§9.5).
