@@ -2,7 +2,7 @@ import "dotenv/config";
 import path from "path";
 import readline from "readline";
 import { PrismaClient } from "@prisma/client";
-import { loadSource } from "./lib/parse";
+import { loadSource, LANGUAGE_ORDER } from "./lib/parse";
 import { validateSource } from "./lib/validate";
 import { loadSlugMap, saveSlugMap, ensureSlugs } from "./lib/slugs";
 import { normalizeSearchName } from "../lib/employees";
@@ -108,7 +108,7 @@ async function main() {
           update: { correctOption: q.correctOption },
         });
 
-        for (const lang of ["cs", "hu", "pl"] as const) {
+        for (const lang of LANGUAGE_ORDER) {
           const tr = q.translations[lang];
           await tx.questionTranslation.upsert({
             where: { questionId_language: { questionId: question.id, language: lang } },
@@ -133,10 +133,11 @@ async function main() {
     return acc;
   }, {});
   const companies = new Set(result.employees.map((e) => e.company));
+  const languageSummary = LANGUAGE_ORDER.map((lang) => `${lang}: ${languageCounts[lang] ?? 0}`).join(", ");
 
   console.log(`\n✓ Seed dokončen.`);
   console.log(
-    `  ${companies.size} firem, ${result.employees.length} zaměstnanců (cs: ${languageCounts.cs ?? 0}, hu: ${languageCounts.hu ?? 0}, pl: ${languageCounts.pl ?? 0}), ${result.questions.length} otázek, ${result.questions.length * 3} překladů.`
+    `  ${companies.size} firem, ${result.employees.length} zaměstnanců (${languageSummary}), ${result.questions.length} otázek, ${result.questions.length * LANGUAGE_ORDER.length} překladů.`
   );
 }
 

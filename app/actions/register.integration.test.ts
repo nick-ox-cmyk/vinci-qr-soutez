@@ -5,6 +5,9 @@ import { registerParticipant } from "./register";
 const hasDb = !!process.env.DATABASE_URL;
 
 vi.mock("@/lib/session", () => ({ setParticipantCookie: async () => {} }));
+// Tenhle test soubor cílí na registerParticipant/DB logiku, ne na časové okno
+// soutěže (to má vlastní testy v lib/competition-window.test.ts) — vždy "open".
+vi.mock("@/lib/competition-window", () => ({ getCompetitionPhase: () => "open" }));
 
 const prisma = new PrismaClient();
 

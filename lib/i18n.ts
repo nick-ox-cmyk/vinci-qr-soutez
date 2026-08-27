@@ -1,16 +1,23 @@
 import type { Language } from "@prisma/client";
 import cs from "@/messages/cs.json";
-import hu from "@/messages/hu.json";
+import sk from "@/messages/sk.json";
 import pl from "@/messages/pl.json";
+import hu from "@/messages/hu.json";
+import ro from "@/messages/ro.json";
+import bg from "@/messages/bg.json";
+import en from "@/messages/en.json";
 
-export const SUPPORTED_LANGUAGES: Language[] = ["cs", "hu", "pl"];
+// Pořadí odpovídá zadání CZ(cs)-SK-PL-HU-RO-BG-EN. `en` je výchozí jazyk
+// přepínače na registraci i fallback při chybějícím překladu.
+export const SUPPORTED_LANGUAGES: Language[] = ["cs", "sk", "pl", "hu", "ro", "bg", "en"];
+export const DEFAULT_LANGUAGE: Language = "en";
 
-const dictionaries: Record<Language, typeof cs> = { cs, hu, pl };
+const dictionaries: Record<Language, typeof en> = { cs, sk, pl, hu, ro, bg, en };
 
-export type Dictionary = typeof cs;
+export type Dictionary = typeof en;
 
 export function getDictionary(language: Language): Dictionary {
-  return dictionaries[language] ?? dictionaries.cs;
+  return dictionaries[language] ?? dictionaries[DEFAULT_LANGUAGE];
 }
 
 /**

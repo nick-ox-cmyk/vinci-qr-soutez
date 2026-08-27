@@ -1,31 +1,31 @@
-﻿number;correct_option;text_cs;opt1_cs;opt2_cs;opt3_cs;text_hu;opt1_hu;opt2_hu;opt3_hu;text_pl;opt1_pl;opt2_pl;opt3_pl
-1;2;Kolik vody vyteče za jeden den z kapajícího kohoutku?;1 litr;15 litrů;100 litrů;Mennyi víz folyik el egy nap alatt egy csöpögő csapból?;1 liter;15 liter;100 liter;Ile wody wycieka w ciągu doby z kapiącego kranu?;1 litr;15 litrów;100 litrów
-2;3;Za jak dlouho se v přírodě rozloží plastová láhev?;5 let;50 let;450 let;Mennyi idő alatt bomlik le a természetben egy műanyag palack?;5 év;50 év;450 év;Ile czasu rozkłada się w przyrodzie plastikowa butelka?;5 lat;50 lat;450 lat
-3;1;Kolik energie ušetří LED žárovka oproti klasické?;přibližně 85 %;přibližně 50 %;přibližně 20 %;Mennyi energiát takarít meg a LED-izzó a hagyományoshoz képest?;körülbelül 85%;körülbelül 50%;körülbelül 20%;Ile energii oszczędza żarówka LED w porównaniu z tradycyjną?;około 85%;około 50%;około 20%
-4;;;;;;;;;;;;;
-5;;;;;;;;;;;;;
-6;;;;;;;;;;;;;
-7;;;;;;;;;;;;;
-8;;;;;;;;;;;;;
-9;;;;;;;;;;;;;
-10;;;;;;;;;;;;;
-11;;;;;;;;;;;;;
-12;;;;;;;;;;;;;
-13;;;;;;;;;;;;;
-14;;;;;;;;;;;;;
-15;;;;;;;;;;;;;
-16;;;;;;;;;;;;;
-17;;;;;;;;;;;;;
-18;;;;;;;;;;;;;
-19;;;;;;;;;;;;;
-20;;;;;;;;;;;;;
-21;;;;;;;;;;;;;
-22;;;;;;;;;;;;;
-23;;;;;;;;;;;;;
-24;;;;;;;;;;;;;
-25;;;;;;;;;;;;;
-26;;;;;;;;;;;;;
-27;;;;;;;;;;;;;
-28;;;;;;;;;;;;;
-29;;;;;;;;;;;;;
-30;;;;;;;;;;;;;
+﻿number;correct_option;text_cs;opt1_cs;opt2_cs;opt3_cs;text_sk;opt1_sk;opt2_sk;opt3_sk;text_pl;opt1_pl;opt2_pl;opt3_pl;text_hu;opt1_hu;opt2_hu;opt3_hu;text_ro;opt1_ro;opt2_ro;opt3_ro;text_bg;opt1_bg;opt2_bg;opt3_bg;text_en;opt1_en;opt2_en;opt3_en
+1;2;Kolik vody vyteče za jeden den z kapajícího kohoutku?;1 litr;15 litrů;100 litrů;Koľko vody unikne za jeden deň z kvapkajúceho kohútika?;1 liter;15 litrov;100 litrov;Ile wody wycieka w ciągu doby z kapiącego kranu?;1 litr;15 litrów;100 litrów;Mennyi víz folyik el egy nap alatt egy csöpögő csapból?;1 liter;15 liter;100 liter;Câtă apă se scurge într-o zi dintr-un robinet care picură?;1 litru;15 litri;100 litri;Колко вода изтича за един ден от капещ кран?;1 литър;15 литра;100 литра;How much water leaks from a dripping tap in one day?;1 litre;15 litres;100 litres
+2;3;Za jak dlouho se v přírodě rozloží plastová láhev?;5 let;50 let;450 let;Za ako dlho sa v prírode rozloží plastová fľaša?;5 rokov;50 rokov;450 rokov;Ile czasu rozkłada się w przyrodzie plastikowa butelka?;5 lat;50 lat;450 lat;Mennyi idő alatt bomlik le a természetben egy műanyag palack?;5 év;50 év;450 év;În cât timp se descompune în natură o sticlă de plastic?;5 ani;50 ani;450 ani;За колко време се разгражда в природата пластмасова бутилка?;5 години;50 години;450 години;How long does it take a plastic bottle to decompose in nature?;5 years;50 years;450 years
+3;1;Kolik energie ušetří LED žárovka oproti klasické?;přibližně 85 %;přibližně 50 %;přibližně 20 %;Koľko energie ušetrí LED žiarovka oproti klasickej?;približne 85 %;približne 50 %;približne 20 %;Ile energii oszczędza żarówka LED w porównaniu z tradycyjną?;około 85%;około 50%;około 20%;Mennyi energiát takarít meg a LED-izzó a hagyományoshoz képest?;körülbelül 85%;körülbelül 50%;körülbelül 20%;Cât de multă energie economisește un bec LED față de unul clasic?;aproximativ 85%;aproximativ 50%;aproximativ 20%;Колко енергия спестява LED крушка спрямо класическа?;приблизително 85%;приблизително 50%;приблизително 20%;How much energy does an LED bulb save compared to a classic one?;approximately 85%;approximately 50%;approximately 20%
+4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+7;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+10;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+11;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+12;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+13;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+14;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+15;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+18;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+19;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+20;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+22;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+23;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+24;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+25;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+26;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+27;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+28;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+29;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -11,6 +11,17 @@ import type { QuestionDTO } from "@/lib/dto";
 
 type ViewState = "unanswered" | "confirming" | "submitting" | "saved" | "already_answered";
 
+/**
+ * Některé otázky mají dlouhý úvodní odstavec před samotnou otázkou (klidně
+ * 250+ znaků) — na mobilu by ve výchozí velikosti nešly na jednu obrazovku
+ * bez rolování k odpovědím. Čím delší text, tím menší písmo.
+ */
+function questionTextSizeClass(text: string): string {
+  if (text.length > 220) return "text-base sm:text-lg";
+  if (text.length > 120) return "text-lg sm:text-xl";
+  return "text-xl sm:text-2xl";
+}
+
 export function QuestionView({
   question,
   dict,
@@ -34,6 +45,7 @@ export function QuestionView({
     { value: 2, label: question.option2 },
     { value: 3, label: question.option3 },
   ];
+  const textSizeClass = questionTextSizeClass(question.text);
 
   async function handleConfirmSubmit() {
     if (selected === null) return;
@@ -47,7 +59,7 @@ export function QuestionView({
       setCounts({ answeredCount: result.answeredCount, totalQuestions: result.totalQuestions });
       setState("already_answered");
     } else {
-      setError("Něco se nepovedlo. Zkus to prosím znovu.");
+      setError(dict.common.genericError);
       setState("unanswered");
     }
   }
@@ -68,7 +80,7 @@ export function QuestionView({
       <Card className="flex-1 p-6">
         {showSubmitBar && (
           <div className="flex h-full flex-col gap-6">
-            <p className="text-xl font-semibold leading-snug text-vinci-blue-ink sm:text-2xl">{question.text}</p>
+            <p className={`font-semibold leading-snug text-vinci-blue-ink ${textSizeClass}`}>{question.text}</p>
 
             <div role="radiogroup" aria-label={question.text} className="flex flex-col gap-3">
               {options.map((opt) => (
@@ -88,7 +100,7 @@ export function QuestionView({
 
         {state === "already_answered" && (
           <div className="flex h-full flex-col gap-6">
-            <p className="text-xl font-semibold leading-snug text-vinci-blue-ink sm:text-2xl">{question.text}</p>
+            <p className={`font-semibold leading-snug text-vinci-blue-ink ${textSizeClass}`}>{question.text}</p>
             <p className="font-medium text-vinci-blue-ink">{dict.question.alreadyAnsweredTitle}</p>
             <div className="flex flex-col gap-3">
               {options.map((opt) => (
@@ -115,11 +127,12 @@ export function QuestionView({
               </>
             ) : (
               <>
-                <h2 className="text-xl font-bold text-vinci-blue">{dict.question.savedTitle}</h2>
-                <p className="text-vinci-blue-ink">
+                <h2 className="text-xl font-bold text-vinci-blue">
+                  {dict.question.savedTitle}{" "}
                   {t(dict, "question.savedProgress", { answered: counts.answeredCount, total: counts.totalQuestions })}
-                </p>
-                <p className="text-sm text-text-muted">{dict.question.savedHint}</p>
+                </h2>
+                <p className="text-sm text-text-muted">{dict.question.resultsNotice}</p>
+                <p className="text-vinci-blue-ink">{dict.question.savedHint}</p>
               </>
             )}
           </div>

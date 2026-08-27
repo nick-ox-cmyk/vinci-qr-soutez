@@ -73,18 +73,29 @@ export function computeWinner(
 export interface CompanyStat {
   companyName: string;
   participantCount: number;
+  /** Celkový počet zaměstnanců firmy v CSV/XLSX — kolik jich šlo maximálně přihlásit. */
+  totalEmployees: number;
   answeredCount: number;
   correctCount: number;
   successRate: number;
 }
 
-export function computeCompanyStats(participants: ParticipantAgg[]): CompanyStat[] {
+/**
+ * `totalEmployeesByCompany` — celkový počet zaměstnanců dané firmy (ne jen
+ * těch, co se zaregistrovali), aby šlo ve výsledcích ukázat "25 (60)" —
+ * z 60 možných se přihlásilo 25.
+ */
+export function computeCompanyStats(
+  participants: ParticipantAgg[],
+  totalEmployeesByCompany: Record<string, number>
+): CompanyStat[] {
   const byCompany = new Map<string, CompanyStat>();
 
   for (const p of participants) {
     const existing = byCompany.get(p.companyName) ?? {
       companyName: p.companyName,
       participantCount: 0,
+      totalEmployees: totalEmployeesByCompany[p.companyName] ?? 0,
       answeredCount: 0,
       correctCount: 0,
       successRate: 0,
@@ -95,8 +106,27 @@ export function computeCompanyStats(participants: ParticipantAgg[]): CompanyStat
     byCompany.set(p.companyName, existing);
   }
 
+  // I firma bez jediného registrovaného účastníka se má v přehledu ukázat
+  // jako "0 (60)" — to je přesně ten případ, který má tahle tabulka odhalit.
+  for (const [companyName, totalEmployees] of Object.entries(totalEmployeesByCompany)) {
+    if (!byCompany.has(companyName)) {
+      byCompany.set(companyName, {
+        companyName,
+        participantCount: 0,
+        totalEmployees,
+        answeredCount: 0,
+        correctCount: 0,
+        successRate: 0,
+      });
+    }
+  }
+
   const stats = [...byCompany.values()].map((c) => ({
     ...c,
+    // Firma bez jediného registrovaného účastníka se do žebříčku nedostane
+    // (nemáme z čeho), ale totalEmployees se hodí i tak — fallback na
+    // participantCount, kdyby zdroj dat neseděl.
+    totalEmployees: Math.max(c.totalEmployees, c.participantCount),
     successRate: successRate(c.correctCount, c.answeredCount),
   }));
 

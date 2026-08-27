@@ -60,7 +60,7 @@ export default async function PrintQrPage() {
           style={{ width: "210mm", height: "297mm", padding: "18mm", boxSizing: "border-box" }}
         >
           <div className="text-center">
-            <p className="font-serif text-2xl font-bold text-vinci-blue">VINCI Environment Day</p>
+            <p className="font-serif text-2xl font-bold text-vinci-blue">ENVI QUIZ — VINCI Energies CEE</p>
             <p className="mt-2 text-6xl font-black text-vinci-blue">Otázka {p.number}</p>
           </div>
 
@@ -78,8 +78,10 @@ export default async function PrintQrPage() {
           </div>
 
           <div className="text-center">
-            <p className="text-xl font-semibold text-vinci-blue-ink">
-              Naskenuj a odpověz / Olvasd be és válaszolj / Zeskanuj i odpowiedz
+            <p className="text-base font-semibold leading-relaxed text-vinci-blue-ink">
+              Naskenuj a odpověz · Naskenuj a odpovedz · Zeskanuj i odpowiedz
+              <br />
+              Olvasd be és válaszolj · Scanează și răspunde · Сканирай и отговори · Scan and answer
             </p>
             <p className="mt-4 font-serif text-lg font-bold text-vinci-blue">VINCI Energies</p>
           </div>

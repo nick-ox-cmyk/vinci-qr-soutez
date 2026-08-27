@@ -4,12 +4,13 @@ import { z } from "zod";
 import type { Language } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { setParticipantCookie } from "@/lib/session";
+import { getCompetitionPhase } from "@/lib/competition-window";
 
 const schema = z.object({ employeeId: z.string().min(1) });
 
 export type RegisterResult =
   | { ok: true; language: Language; reclaimed: boolean }
-  | { ok: false; error: "INVALID_INPUT" | "EMPLOYEE_NOT_FOUND" };
+  | { ok: false; error: "INVALID_INPUT" | "EMPLOYEE_NOT_FOUND" | "COMPETITION_LOCKED" };
 
 /**
  * §5.1 krok 5–6. Vytvoří (nebo najde existující) Participant, nastaví
@@ -18,6 +19,10 @@ export type RegisterResult =
  * odpovědi zůstávají.
  */
 export async function registerParticipant(employeeId: string): Promise<RegisterResult> {
+  // Obrana do hloubky — normálně se sem vůbec nedostane, protože stránka
+  // mimo okno soutěže formulář nevykreslí (viz CompetitionLockedScreen).
+  if (getCompetitionPhase() !== "open") return { ok: false, error: "COMPETITION_LOCKED" };
+
   const parsed = schema.safeParse({ employeeId });
   if (!parsed.success) return { ok: false, error: "INVALID_INPUT" };
 

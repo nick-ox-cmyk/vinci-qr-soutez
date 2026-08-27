@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "ENVI QUIZ — VINCI Energies CEE"
+  },
+  "languages": {
+    "cs": "Cehă",
+    "sk": "Slovacă",
+    "pl": "Poloneză",
+    "hu": "Maghiară",
+    "ro": "Română",
+    "bg": "Bulgară",
+    "en": "Engleză"
+  },
+  "common": {
+    "browserTip": "Sfat: deschide pagina într-un browser obișnuit (Chrome / Safari), ca să nu dispară concursul.",
+    "poweredBy": "VINCI Energies",
+    "genericError": "Ceva nu a funcționat. Te rugăm să încerci din nou."
+  },
+  "register": {
+    "welcomeHeading": "Bine ai venit la ENVI QUIZ VINCI Energies CEE.",
+    "chooseLanguageLabel": "Mai întâi alege-ți limba.",
+    "searchLabel": "Acum prezintă-te.",
+    "searchPlaceholder": "Începe să scrii numele de familie…",
+    "searchHint": "Scrie cel puțin 2 litere din prenume sau nume.",
+    "searchLoading": "Căutăm…",
+    "searchEmpty": "Nu am găsit pe nimeni.",
+    "notFoundHelp": "Nu ți-ai găsit numele? Scrie un email la {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
+    "confirmHeading": "Tu ești?",
+    "yourLanguage": "Limba ta",
+    "confirmButton": "Confirmă și începe",
+    "backButton": "Înapoi la căutare",
+    "gdprNotice": "Numele și răspunsurile tale sunt folosite doar pentru evaluarea acestui concurs și vor fi șterse în 30 de zile de la anunțarea rezultatelor.",
+    "welcomeBack": "Bine ai revenit, continui concursul tău.",
+    "doneTitle": "Ești înregistrat/ă!",
+    "doneBody": "Acum caută codurile QR din incinta companiei și răspunde la întrebări."
+  },
+  "question": {
+    "questionLabel": "Întrebarea {number}",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Trimite răspunsul",
+    "submitting": "Se trimite…",
+    "confirmTitle": "Răspunsul nu va mai putea fi schimbat.",
+    "confirmBody": "Chiar vrei să trimiți?",
+    "confirmCancel": "Anulează",
+    "confirmSubmit": "Trimite",
+    "alreadyAnsweredTitle": "Ai răspuns deja la această întrebare.",
+    "alreadyAnsweredHint": "Spor la căutarea celorlalte!",
+    "savedTitle": "Răspuns salvat.",
+    "savedProgress": "Ai răspuns la {answered} din {total} întrebări.",
+    "resultsNotice": "Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Environment Day.",
+    "savedHint": "Continuă căutarea următorului cod!",
+    "allDoneTitle": "Toate răspunsurile tale sunt salvate.",
+    "allDoneBody": "Îți mulțumim pentru răspunsuri și implicare. Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Environment Day.",
+    "identifyFirst": "Acum prezintă-te.",
+    "yourAnswer": "Răspunsul tău"
+  },
+  "locked": {
+    "tooEarlyTitle": "PREA DEVREME!",
+    "tooEarlyBody": "Poți răspunde începând cu {datetime}.",
+    "tooLateTitle": "Concursul s-a încheiat…",
+    "tooLateBody": "Îți mulțumim pentru participare! Vom publica rezultatele pe 22 septembrie, cu ocazia Environment Day."
+  },
+  "notFound": {
+    "title": "Pagină negăsită",
+    "body": "Acest cod QR nu există sau nu mai este activ.",
+    "backHome": "Înapoi la start"
+  }
+}

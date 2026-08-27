@@ -1,10 +1,14 @@
-# VINCI Environment Day — QR soutěž
+# ENVI QUIZ — VINCI Energies CEE
 
-Interní webová QR soutěž pro zaměstnance **VINCI Energies CZ** během akce *VINCI Environment Day*.
-Účastníci naskenují jeden z 30 QR kódů rozvěšených po prostorách firmy, odpoví na otázku a sbírají
-skóre bez jakékoli zpětné vazby o správnosti. Plná specifikace: [`PROMPT-vinci-qr-soutez.md`](./PROMPT-vinci-qr-soutez.md).
+Interní webová QR soutěž pro zaměstnance **VINCI Energies CEE** (regionu střední a východní Evropy)
+během akce *Environment Day*. Účastníci naskenují jeden z 30 QR kódů rozvěšených po prostorách
+firmy, odpoví na otázku a sbírají skóre bez jakékoli zpětné vazby o správnosti.
+Plná specifikace: [`PROMPT-vinci-qr-soutez.md`](./PROMPT-vinci-qr-soutez.md).
 
-Stack: **Next.js 15 (App Router) · TypeScript · Prisma + PostgreSQL · Tailwind CSS v4 · Recharts**.
+**7 jazyků**: CZ · SK · PL · HU · RO · BG · EN (výchozí). Očekávaný rozsah: až ~4000 účastníků,
+soutěž běží jeden týden s peakem v pondělí — viz [§8 Výkon a zátěž](#8-výkon-a-zátěž-4000-účastníků).
+
+Stack: **Next.js 15 (App Router) · TypeScript · Prisma + PostgreSQL (Neon) · Tailwind CSS v4 · Recharts**.
 
 ---
 
@@ -31,6 +35,8 @@ Doplň do `.env`:
 - `DATABASE_URL` — např. `postgresql://vinci:vinci@localhost:5432/vinci_qr` pro lokální Docker DB
 - `ADMIN_PASSWORD` — heslo k výsledkové stránce, zvol si vlastní
 - `NEXT_PUBLIC_BASE_URL` — pro lokální vývoj `http://localhost:3000`
+- `COMPETITION_START_AT` / `COMPETITION_END_AT` — volitelné, viz [§9 Časové okno soutěže](#9-časové-okno-soutěže).
+  Pro lokální testování mimo ostré datum si je dočasně nastav do minulosti/budoucnosti.
 
 ```bash
 npx prisma migrate dev --name init   # založí schéma v DB
@@ -39,9 +45,9 @@ npm run seed                         # naplní DB, vygeneruje data/question-slug
 npm run dev                          # http://localhost:3000
 ```
 
-Vzorová data v `data/` (10 zaměstnanců, 3 vyplněné otázky ve `VINCI-Environment-Day-otazky.xlsx`)
-stačí na vyzkoušení celého průchodu appkou. Před ostrou akcí je nahraď skutečným obsahem — viz
-[§3 Postup přípravy akce](#3-postup-přípravy-akce).
+Vzorová data v `data/` (18 zaměstnanců napříč všemi 7 jazyky, 3 vyplněné otázky ve
+`VINCI-Environment-Day-otazky.xlsx`) stačí na vyzkoušení celého průchodu appkou. Před ostrou akcí
+je nahraď skutečným obsahem — viz [§3 Postup přípravy akce](#3-postup-přípravy-akce).
 
 ---
 
@@ -65,9 +71,10 @@ stačí na vyzkoušení celého průchodu appkou. Před ostrou akcí je nahraď 
 
 1. Vyplň `data/employees.csv` a `data/questions.csv` **nebo** jeden sešit
    `data/VINCI-Environment-Day-otazky.xlsx` (listy `OTÁZKY` + `ZAMĚSTNANCI`) — XLSX má přednost,
-   pokud v `data/` leží. Ve vzorovém sešitu i vzorových CSV jsou první řádky jen ukázkové — před
-   ostrým seedem je přepiš skutečným obsahem (a smaž případné poznámkové řádky, viz
-   [Co se stane, když…](#5-co-se-stane-když)).
+   pokud v `data/` leží. List `OTÁZKY` má 30 sloupců: číslo, správná odpověď a pak 7 bloků po
+   4 sloupcích (text + 3 odpovědi) v pořadí **CZ · SK · PL · HU · RO · BG · EN**. Ve vzorovém
+   sešitu i vzorových CSV jsou první řádky jen ukázkové — před ostrým seedem je přepiš skutečným
+   obsahem.
 2. `npm run validate` — ověří data bez zápisu do DB. Při chybě vypíše přesný řádek a problém.
 3. `npm run seed` — zapíše do DB (idempotentně — jde spouštět opakovaně) a vygeneruje/doplní
    `data/question-slugs.json`. **Tenhle soubor commitni do repa** — je to jediný zdroj pravdy
@@ -120,8 +127,9 @@ nahradí toto konkrétní kritérium shody čistým časem, nic víc.
 |---|---|
 | **Telefon se vybije / ztratí se cookie** | Session cookie vydrží 60 dní, takže se to nemá stávat. Pokud přesto ano, další sken jakéhokoli `/q/{slug}` nabídne inline „Nejdřív se představ" — po znovu-nalezení jména se odpovědi zachovají (§5.3). |
 | **QR kód nikdo nenajde** | Ta otázka prostě zůstane nezodpovězená, nic se nekazí — soutěž nemá povinnost odpovědět na všechno. |
-| **Zaměstnanec chybí v seznamu** | Registrační stránka zobrazuje „Nenašel jsi svoje jméno? Ozvi se organizátorovi." ve všech 3 jazycích. Doplň ho do `data/employees.csv` / listu ZAMĚSTNANCI a spusť `npm run seed` znovu (idempotentní, nic nerozbije). |
-| **`npm run validate` / `npm run seed` hlásí chybu na řádku, který vypadá v pořádku** | XLSX sešit má často poznámkové řádky (např. instrukce pro překladatele) se stejnou strukturou sloupců jako data — validátor je nerozliší od neúplného záznamu. Smaž je nebo přesuň mimo listy `OTÁZKY`/`ZAMĚSTNANCI`. |
+| **Zaměstnanec chybí v seznamu** | Registrační stránka zobrazuje „Tvé jméno se nezobrazilo? Napiš mail na thavlickova@vinci-energies.cz" ve všech 7 jazycích. Doplň ho do `data/employees.csv` / listu ZAMĚSTNANCI a spusť `npm run seed` znovu (idempotentní, nic nerozbije). |
+| **`npm run validate` / `npm run seed` hlásí chybu na řádku, který vypadá v pořádku** | XLSX sešit má často poznámkové řádky (např. instrukce pro překladatele) se stejnou strukturou sloupců jako data — validátor je nerozliší od neúplného záznamu. Smaž je nebo přesuň mimo listy `OTÁZKY`/`ZAMĚSTNANCI` (aktuální vzorový sešit už žádný takový řádek neobsahuje). |
+| **Někdo naskenuje QR kód mimo časové okno soutěže** | Zobrazí se „MOC BRZY!" (před startem) nebo „Soutěž je ukončena…" (po konci) ve zvoleném jazyce — žádný formulář se nevykreslí, `registerParticipant`/`submitAnswer` navíc odmítnou zápis i při přímém volání (obrana do hloubky). Viz [§9 Časové okno soutěže](#9-časové-okno-soutěže). |
 | **Someone se pokusí soutěžit pod cizím jménem** | Bez PIN kódu to technicky jde (vědomý kompromis, viz níže) — `reclaimCount` ve výsledkové tabulce ukazuje, kolikrát byla identita „převzata" na jiném zařízení; vysoká hodnota je varovný signál. |
 | **Potřebuješ smazat osobní data po akci** | `npm run purge` smaže `Answer` + `Participant` (GDPR, §8). `Employee`/`Company` zůstanou pro případné příští ročníky. |
 | **Potřebuješ přetisknout jen několik plakátů** | Slugy jsou stabilní napříč seedy (`data/question-slugs.json`) — `npm run qr` znovu vygeneruje identické QR kódy, dokud soubor nesmažeš nebo nepoužiješ `npm run seed -- --regenerate-slugs` (velké varování + potvrzení, **rozbije všech 30 vytištěných plakátů**). |
@@ -166,6 +174,55 @@ vlastní fixtures z `e2e/fixtures/`, ne ostrá data z `data/`) a spuštěné Pla
 
 ---
 
+## 8. Výkon a zátěž (4000 účastníků)
+
+Očekávaný rozsah: až ~4000 registrovaných účastníků napříč celým CEE regionem, soutěž běží jeden
+týden, největší nápor v pondělí ráno (start okna). Zátěžový test proti izolované Neon větvi a
+konkrétní doporučení na plán/compute jsou v [`docs/LOAD-TEST.md`](./docs/LOAD-TEST.md) — shrnutí:
+
+- **Rate limiting je in-memory** (§8 v `PROMPT-vinci-qr-soutez.md`) — funguje per serverless
+  instance, ne globálně napříč nimi. Pro pár stovek lidí to stačilo; při tisících souběžných
+  požadavků rozprostřených přes desítky Vercel instancí limity efektivně povolí víc, než je
+  nastavené číslo. Funkčně to appku nerozbije (DB unique constraint pořád chrání proti duplicitám),
+  jen to není přesný rate limit. Až bude reálná potřeba přesného limitu, `lib/ratelimit.ts` je
+  navržené tak, aby šlo implementaci prohodit za Upstash Redis beze změny volajícího kódu.
+- **Neon compute** — free/nejnižší tier běžně škáluje na 0.25–1 CU a při neaktivitě uspává
+  (studený start při první žádosti po pauze). Pro pondělní špičku se stovkami souběžných požadavků
+  doporučujeme před akcí dočasně navýšit `autoscalingLimitMaxCu` (Neon Console → Compute) a zvážit
+  vypnutí scale-to-zero na dobu trvání soutěže, ať první příchozí nečekají na probuzení databáze.
+- **Vercel serverless funkce** škálují automaticky, žádný zásah není potřeba — jen je dobré vědět,
+  že to znamená víc souběžných DB connections, proto je důležité používat **pooled** connection
+  string z Neonu (`DATABASE_URL`, ne `DATABASE_URL_UNPOOLED`) — aplikace to už tak má.
+
+---
+
+## 9. Časové okno soutěže
+
+QR kódy visí den dopředu, ale odpovídat jde jen v daném okně (`lib/competition-window.ts`):
+
+```bash
+COMPETITION_START_AT="2026-09-14T06:00:00.000Z"   # 14. 9. 8:00 CEST / 9:00 EEST (RO, BG)
+COMPETITION_END_AT="2026-09-18T14:00:00.000Z"     # 18. 9. 16:00 CEST / 17:00 EEST (RO, BG)
+```
+
+Obě proměnné jsou nepovinné (výchozí hodnoty odpovídají výše) — nastav je v `.env` / Vercel env,
+pokud se termín posune. Je to **jeden konkrétní okamžik v UTC**; RO/BG vidí čas o hodinu později
+jen proto, že jsou v EEST časové zóně (o hodinu napřed před CEST) — nic se nedopočítává ručně, jen
+se pro zobrazení vybere správná časová zóna podle jazyka účastníka.
+
+Mimo okno se `/` i `/q/{slug}` chovají stejně pro registrovaného i neregistrovaného účastníka —
+místo formuláře/otázky se zobrazí „MOC BRZY!" resp. „Soutěž je ukončena…" v jeho jazyce (nebo
+s přepínačem jazyka, pokud ho ještě neznáme). `registerParticipant` a `submitAnswer` mimo okno
+odmítnou zápis i při přímém volání (obrana do hloubky, ne jen UI).
+
+**Pro lokální testování mimo ostré datum** si do `.env` dočasně nastav širší okno, např.:
+```bash
+COMPETITION_START_AT="2020-01-01T00:00:00.000Z"
+COMPETITION_END_AT="2030-01-01T00:00:00.000Z"
+```
+
+---
+
 ## Otevřené body / vědomé kompromisy
 
 1. **Doména není vybraná předem** — vše čte `NEXT_PUBLIC_BASE_URL`. QR kódy (`npm run qr`) se
@@ -173,11 +230,12 @@ vlastní fixtures z `e2e/fixtures/`, ne ostrá data z `data/`) a spuštěné Pla
 2. **Bez PIN/hesla lze technicky soutěžit pod cizím jménem** — vědomé rozhodnutí pro interní akci.
    Detekce přes `reclaimCount` ve výsledkové tabulce.
 3. **Zaměstnanec chybějící v CSV/XLSX** se nezaregistruje — registrační stránka na to má
-   srozumitelnou hlášku ve všech 3 jazycích.
+   srozumitelnou hlášku ve všech 7 jazycích.
 4. **Fonty VinciSans / VinciSerif** jsou licencované a v repu nejsou — nahrazeny Source Sans 3 /
-   Source Serif 4 (Google Fonts, `latin-ext`). Až klient dodá licencované soubory, stačí upravit
-   `app/fonts.ts` na `next/font/local` (viz zakomentovaný příklad přímo v souboru).
-5. **Logo a favicon** — `public/vinci-energies-logo.svg` a `public/favicon.webp` jsou reálné
+   Source Serif 4 (Google Fonts, `latin-ext` + `cyrillic` kvůli bulharštině). Až klient dodá
+   licencované soubory, stačí upravit `app/fonts.ts` na `next/font/local` (viz zakomentovaný
+   příklad přímo v souboru) — ověř, že licencované řezy mají i cyrilici.
+5. **Logo a favicon** — `public/vinci-energies-logo.svg` a `public/favicon.png` jsou reálné
    dodané assety (ne placeholder). Registrační stránka je záměrně čistě formulářová — bez
    fotografického pásu ani dekorativních odznaků.
 6. **Barvy** (`app/globals.css`, `:root`) jsou odečtené z dodaných PDF (diplom + plakát), ne
@@ -186,3 +244,11 @@ vlastní fixtures z `e2e/fixtures/`, ne ostrá data z `data/`) a spuštěné Pla
    nepoužívaných cestách) — knihovna se používá jen lokálně v `scripts/` nad důvěryhodnými
    vstupními soubory připravenými organizátorem, ne za běhu aplikace nad veřejným vstupem, takže
    riziko je omezené. Přesto stojí za zvážení před dalším ročníkem zkontrolovat aktuální stav.
+8. **Nové jazyky (SK, RO, BG) — UI texty jsou strojově/AI přeložené**, ne od rodilého mluvčího.
+   Otázky cs/hu/pl mají reálné firemní překlady; sk/ro/bg/en vzorové otázky v `data/` jsou taky jen
+   AI překlad pro účely testování. **Před ostrým seedem nech UI texty (`messages/sk.json`,
+   `messages/ro.json`, `messages/bg.json`) i skutečný obsah otázek zkontrolovat rodilým mluvčím.**
+9. **`Question.number` a `correctOption` se needitují needitovatelně napříč jazyky** — pokud se
+   při doplňování RO/BG/SK/EN překladů omylem prohodí pořadí odpovědí oproti českému vzoru,
+   validátor to nepozná (kontroluje jen že pole nejsou prázdná, ne významovou shodu pořadí). Po
+   doplnění nových jazyků udělej ruční kontrolu na pár náhodných otázkách.

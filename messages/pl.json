@@ -1,26 +1,31 @@
 {
   "meta": {
-    "title": "VINCI Environment Day — konkurs QR"
+    "title": "ENVI QUIZ — VINCI Energies CEE"
   },
   "languages": {
     "cs": "Czeski",
+    "sk": "Słowacki",
+    "pl": "Polski",
     "hu": "Węgierski",
-    "pl": "Polski"
+    "ro": "Rumuński",
+    "bg": "Bułgarski",
+    "en": "Angielski"
   },
   "common": {
     "browserTip": "Wskazówka: otwórz stronę w zwykłej przeglądarce (Chrome / Safari), aby konkurs Ci nie zniknął.",
-    "poweredBy": "VINCI Energies"
+    "poweredBy": "VINCI Energies",
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   },
   "register": {
-    "eyebrow": "Konkurs QR",
-    "heading": "VINCI Environment Day",
-    "intro": "Zeskanowałeś kod QR na wydarzeniu? Najpierw się przedstaw.",
-    "searchLabel": "Znajdź swoje imię",
-    "searchPlaceholder": "Imię i nazwisko…",
+    "welcomeHeading": "Witamy w ENVI QUIZ VINCI Energies CEE.",
+    "chooseLanguageLabel": "Najpierw wybierz swój język.",
+    "searchLabel": "Teraz się przedstaw.",
+    "searchPlaceholder": "Zacznij pisać swoje nazwisko…",
     "searchHint": "Wpisz co najmniej 2 znaki imienia lub nazwiska.",
     "searchLoading": "Szukam…",
     "searchEmpty": "Nikogo nie znaleziono.",
-    "notFoundHelp": "Nie znalazłeś swojego imienia? Zgłoś się do organizatora.",
+    "notFoundHelp": "Nie znalazłeś swojego imienia? Napisz na {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
     "confirmHeading": "Czy to Ty?",
     "yourLanguage": "Twój język",
     "confirmButton": "Potwierdź i zacznij",
@@ -40,14 +45,21 @@
     "confirmCancel": "Anuluj",
     "confirmSubmit": "Wyślij",
     "alreadyAnsweredTitle": "Na to pytanie już odpowiedziałeś/aś.",
-    "alreadyAnsweredHint": "Szukaj kolejnego kodu QR.",
+    "alreadyAnsweredHint": "Powodzenia w szukaniu kolejnych!",
     "savedTitle": "Odpowiedź zapisana.",
     "savedProgress": "Odpowiedziałeś/aś na {answered} z {total} pytań.",
-    "savedHint": "Kontynuuj poszukiwanie kolejnego kodu QR.",
+    "resultsNotice": "Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji Environment Day.",
+    "savedHint": "Ruszaj szukać kolejnego kodu!",
     "allDoneTitle": "Wszystkie odpowiedzi zostały zapisane.",
-    "allDoneBody": "Dziękujemy za odpowiedzi i Twoją aktywność. Poprawne odpowiedzi opublikujemy razem z wynikami konkursu przy okazji Environment Day.",
-    "identifyFirst": "Najpierw się przedstaw",
+    "allDoneBody": "Dziękujemy za odpowiedzi i Twoją aktywność. Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji Environment Day.",
+    "identifyFirst": "Teraz się przedstaw.",
     "yourAnswer": "Twoja odpowiedź"
+  },
+  "locked": {
+    "tooEarlyTitle": "ZA WCZEŚNIE!",
+    "tooEarlyBody": "Będziesz mógł/mogła odpowiadać od {datetime}.",
+    "tooLateTitle": "Konkurs został zakończony…",
+    "tooLateBody": "Dziękujemy za udział! Wyniki opublikujemy 22 września przy okazji Environment Day."
   },
   "notFound": {
     "title": "Strona nie znaleziona",

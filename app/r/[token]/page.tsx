@@ -1,6 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 import { isValidAdminUrlToken, isAdmin } from "@/lib/session";
-import { getParticipantAggregates, getQuestionAggregates, getAnswerTimestamps, getTotalQuestions } from "@/lib/results";
+import {
+  getParticipantAggregates,
+  getQuestionAggregates,
+  getAnswerTimestamps,
+  getTotalQuestions,
+  getCompanyEmployeeCounts,
+} from "@/lib/results";
 import { rankParticipants } from "@/lib/scoring";
 import {
   computeKPI,
@@ -29,15 +35,16 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
   if (!isValidAdminUrlToken(token)) notFound();
   if (!(await isAdmin())) redirect(`/r/${token}/login`);
 
-  const [participants, questions, answerTimestamps, totalQuestions] = await Promise.all([
+  const [participants, questions, answerTimestamps, totalQuestions, companyEmployeeCounts] = await Promise.all([
     getParticipantAggregates(),
     getQuestionAggregates(),
     getAnswerTimestamps(),
     getTotalQuestions(),
+    getCompanyEmployeeCounts(),
   ]);
 
   const kpi = computeKPI(participants, totalQuestions);
-  const companyStats = computeCompanyStats(participants);
+  const companyStats = computeCompanyStats(participants, companyEmployeeCounts);
   const questionStats = computeQuestionStats(questions);
   const histogram = computeHistogram(participants, totalQuestions);
   const languageStats = computeLanguageStats(participants);
@@ -52,7 +59,7 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-vinci-blue">Výsledky — VINCI Environment Day</h1>
+          <h1 className="text-2xl font-bold text-vinci-blue">Výsledky — ENVI QUIZ</h1>
           <p className="text-sm text-text-muted">Aktualizováno při každém načtení stránky.</p>
         </div>
         <form action={adminLogout}>
@@ -104,14 +111,15 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
         <h2 className="mb-1 text-lg font-bold text-vinci-blue">Pořadí firem</h2>
         <p className="mb-3 text-sm text-text-muted">
           Řazeno primárně podle počtu správných odpovědí — u toho ale absolutní počet zvýhodňuje velké firmy, proto je
-          vedle i procento úspěšnosti.
+          vedle i procento úspěšnosti. „Účastníků“ je registrovaní (v závorce celkový počet zaměstnanců firmy z
+          CSV/XLSX) — např. 25 (60) znamená, že se z 60 možných přihlásilo 25.
         </p>
         <div className="overflow-x-auto rounded-2xl border border-border">
           <table className="w-full min-w-[520px] border-collapse text-sm">
             <thead className="bg-surface-muted">
               <tr>
                 <th className="border-b border-border px-3 py-2 text-left">Firma</th>
-                <th className="border-b border-border px-3 py-2 text-right">Účastníků</th>
+                <th className="border-b border-border px-3 py-2 text-right">Účastníků (celkem)</th>
                 <th className="border-b border-border px-3 py-2 text-right">Zodpovězeno</th>
                 <th className="border-b border-border px-3 py-2 text-right">Správně</th>
                 <th className="border-b border-border px-3 py-2 text-right">Úspěšnost</th>
@@ -121,7 +129,9 @@ export default async function ResultsDashboardPage({ params }: { params: Promise
               {companyStats.map((c) => (
                 <tr key={c.companyName} className="border-b border-border last:border-0 odd:bg-surface even:bg-surface-muted/40">
                   <td className="px-3 py-2">{c.companyName}</td>
-                  <td className="px-3 py-2 text-right">{c.participantCount}</td>
+                  <td className="px-3 py-2 text-right">
+                    {c.participantCount} <span className="text-text-muted">({c.totalEmployees})</span>
+                  </td>
                   <td className="px-3 py-2 text-right">{c.answeredCount}</td>
                   <td className="px-3 py-2 text-right">{c.correctCount}</td>
                   <td className="px-3 py-2 text-right">{c.successRate.toFixed(0)} %</td>

@@ -1,8 +1,19 @@
 import type { Language } from "@prisma/client";
 import type { ParsedSource, RawEmployeeRow, RawQuestionRow } from "./parse";
+import { LANGUAGE_ORDER } from "./parse";
 import { normalizeSearchName } from "../../lib/employees";
 
-const VALID_LANGUAGES = ["cs", "hu", "pl"];
+const VALID_LANGUAGES: readonly string[] = LANGUAGE_ORDER;
+
+const LANGUAGE_LABEL: Record<string, string> = {
+  cs: "CS",
+  sk: "SK",
+  pl: "PL",
+  hu: "HU",
+  ro: "RO",
+  bg: "BG",
+  en: "EN",
+};
 
 export interface ValidEmployee {
   fullName: string;
@@ -44,7 +55,7 @@ function validateEmployeeRow(row: RawEmployeeRow, errors: string[]): ValidEmploy
     valid = false;
   }
   if (!VALID_LANGUAGES.includes(row.language)) {
-    errors.push(`${row.ref}: neplatný jazyk "${row.language}" (očekáváno cs/hu/pl).`);
+    errors.push(`${row.ref}: neplatný jazyk "${row.language}" (očekáváno jedno z: ${VALID_LANGUAGES.join("/")}).`);
     valid = false;
   }
 
@@ -73,37 +84,40 @@ function validateQuestionRow(row: RawQuestionRow, errors: string[]): ValidQuesti
     valid = false;
   }
 
-  const requiredFields: [string, string][] = [
-    ["text (CS)", row.textCs],
-    ["odpověď 1 (CS)", row.opt1Cs],
-    ["odpověď 2 (CS)", row.opt2Cs],
-    ["odpověď 3 (CS)", row.opt3Cs],
-    ["text (HU)", row.textHu],
-    ["odpověď 1 (HU)", row.opt1Hu],
-    ["odpověď 2 (HU)", row.opt2Hu],
-    ["odpověď 3 (HU)", row.opt3Hu],
-    ["text (PL)", row.textPl],
-    ["odpověď 1 (PL)", row.opt1Pl],
-    ["odpověď 2 (PL)", row.opt2Pl],
-    ["odpověď 3 (PL)", row.opt3Pl],
-  ];
-  for (const [label, value] of requiredFields) {
-    if (!value.trim()) {
-      errors.push(`${row.ref}: chybí ${label} — otázka musí mít kompletní překlad ve všech třech jazycích.`);
-      valid = false;
+  for (const lang of LANGUAGE_ORDER) {
+    const tr = row.translations[lang];
+    const label = LANGUAGE_LABEL[lang];
+    const fields: [string, string][] = [
+      [`text (${label})`, tr.text],
+      [`odpověď 1 (${label})`, tr.option1],
+      [`odpověď 2 (${label})`, tr.option2],
+      [`odpověď 3 (${label})`, tr.option3],
+    ];
+    for (const [fieldLabel, value] of fields) {
+      if (!value.trim()) {
+        errors.push(`${row.ref}: chybí ${fieldLabel} — otázka musí mít kompletní překlad ve všech ${LANGUAGE_ORDER.length} jazycích.`);
+        valid = false;
+      }
     }
   }
 
   if (!valid) return null;
 
+  const translations = {} as Record<Language, ValidQuestionTranslation>;
+  for (const lang of LANGUAGE_ORDER) {
+    const tr = row.translations[lang];
+    translations[lang] = {
+      text: tr.text.trim(),
+      option1: tr.option1.trim(),
+      option2: tr.option2.trim(),
+      option3: tr.option3.trim(),
+    };
+  }
+
   return {
     number,
     correctOption: correctOptionNum as 1 | 2 | 3,
-    translations: {
-      cs: { text: row.textCs.trim(), option1: row.opt1Cs.trim(), option2: row.opt2Cs.trim(), option3: row.opt3Cs.trim() },
-      hu: { text: row.textHu.trim(), option1: row.opt1Hu.trim(), option2: row.opt2Hu.trim(), option3: row.opt3Hu.trim() },
-      pl: { text: row.textPl.trim(), option1: row.opt1Pl.trim(), option2: row.opt2Pl.trim(), option3: row.opt3Pl.trim() },
-    },
+    translations,
   };
 }
 

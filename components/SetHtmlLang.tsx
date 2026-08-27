@@ -12,7 +12,7 @@ export function SetHtmlLang({ lang }: { lang: string }) {
   useEffect(() => {
     document.documentElement.lang = lang;
     return () => {
-      document.documentElement.lang = "cs";
+      document.documentElement.lang = "en";
     };
   }, [lang]);
 

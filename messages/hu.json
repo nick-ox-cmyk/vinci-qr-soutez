@@ -1,26 +1,31 @@
 {
   "meta": {
-    "title": "VINCI Environment Day — QR verseny"
+    "title": "ENVI QUIZ — VINCI Energies CEE"
   },
   "languages": {
     "cs": "Cseh",
+    "sk": "Szlovák",
+    "pl": "Lengyel",
     "hu": "Magyar",
-    "pl": "Lengyel"
+    "ro": "Román",
+    "bg": "Bolgár",
+    "en": "Angol"
   },
   "common": {
     "browserTip": "Tipp: nyisd meg az oldalt hagyományos böngészőben (Chrome / Safari), hogy a verseny ne tűnjön el.",
-    "poweredBy": "VINCI Energies"
+    "poweredBy": "VINCI Energies",
+    "genericError": "Valami hiba történt. Kérjük, próbáld újra."
   },
   "register": {
-    "eyebrow": "QR verseny",
-    "heading": "VINCI Environment Day",
-    "intro": "Beolvastad a QR kódot a rendezvényen? Először mutatkozz be.",
-    "searchLabel": "Keresd meg a nevedet",
-    "searchPlaceholder": "Vezetéknév és keresztnév…",
+    "welcomeHeading": "Üdvözlünk az ENVI QUIZ VINCI Energies CEE-ben.",
+    "chooseLanguageLabel": "Először válaszd ki a nyelvedet.",
+    "searchLabel": "Most mutatkozz be.",
+    "searchPlaceholder": "Kezdd el beírni a vezetékneved…",
     "searchHint": "Írj be legalább 2 betűt a nevedből vagy vezetéknevedből.",
     "searchLoading": "Keresés…",
     "searchEmpty": "Senkit sem találtunk.",
-    "notFoundHelp": "Nem találod a nevedet? Szólj a szervezőnek.",
+    "notFoundHelp": "Nem találod a nevedet? Írj emailt: {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
     "confirmHeading": "Te vagy az?",
     "yourLanguage": "A nyelved",
     "confirmButton": "Megerősítés és kezdés",
@@ -40,14 +45,21 @@
     "confirmCancel": "Mégse",
     "confirmSubmit": "Küldés",
     "alreadyAnsweredTitle": "Erre a kérdésre már válaszoltál.",
-    "alreadyAnsweredHint": "Keresd a következő QR kódot.",
+    "alreadyAnsweredHint": "Sok szerencsét a többi kereséséhez!",
     "savedTitle": "Válasz mentve.",
     "savedProgress": "{answered} / {total} kérdésre válaszoltál.",
-    "savedHint": "Folytasd a következő QR kód keresésével.",
+    "resultsNotice": "A helyes válaszokat a verseny eredményeivel együtt tesszük közzé szeptember 22-én, az Environment Day alkalmából.",
+    "savedHint": "Irány a következő kód keresése!",
     "allDoneTitle": "Minden válaszod el van mentve.",
-    "allDoneBody": "Köszönjük a válaszaidat és az aktivitásodat. A helyes válaszokat a verseny eredményeivel együtt tesszük közzé az Environment Day alkalmából.",
-    "identifyFirst": "Először mutatkozz be",
+    "allDoneBody": "Köszönjük a válaszaidat és az aktivitásodat. A helyes válaszokat a verseny eredményeivel együtt tesszük közzé szeptember 22-én, az Environment Day alkalmából.",
+    "identifyFirst": "Most mutatkozz be.",
     "yourAnswer": "A válaszod"
+  },
+  "locked": {
+    "tooEarlyTitle": "MÉG KORAI!",
+    "tooEarlyBody": "Válaszolni {datetime}-tól/től tudsz.",
+    "tooLateTitle": "A verseny véget ért…",
+    "tooLateBody": "Köszönjük a részvételt! Az eredményeket szeptember 22-én tesszük közzé az Environment Day alkalmából."
   },
   "notFound": {
     "title": "Az oldal nem található",

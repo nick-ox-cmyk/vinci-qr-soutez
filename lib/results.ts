@@ -87,6 +87,17 @@ export async function getQuestionAggregates(): Promise<QuestionAgg[]> {
   });
 }
 
+/**
+ * Celkový počet zaměstnanců za firmu (ne jen registrovaných účastníků) —
+ * aby výsledky mohly ukázat "25 (60)": z 60 možných se přihlásilo 25.
+ */
+export async function getCompanyEmployeeCounts(): Promise<Record<string, number>> {
+  const companies = await prisma.company.findMany({
+    select: { name: true, _count: { select: { employees: true } } },
+  });
+  return Object.fromEntries(companies.map((c) => [c.name, c._count.employees]));
+}
+
 export async function getAnswerTimestamps(): Promise<Date[]> {
   const rows = await prisma.answer.findMany({ select: { answeredAt: true } });
   return rows.map((r) => r.answeredAt);

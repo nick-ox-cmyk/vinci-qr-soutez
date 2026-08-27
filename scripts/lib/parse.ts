@@ -3,6 +3,12 @@ import path from "path";
 import * as XLSX from "xlsx";
 import { parseDelimited } from "./csv";
 
+// Musí odpovídat lib/i18n.ts `SUPPORTED_LANGUAGES` — zdvojeno tady záměrně
+// (viz komentář u importu v lib/i18n.ts), aby skripty spouštěné přes `tsx`
+// nezávisely na tom, jestli @-alias resolvne i mimo Next.js runtime.
+export const LANGUAGE_ORDER = ["cs", "sk", "pl", "hu", "ro", "bg", "en"] as const;
+export type SeedLanguage = (typeof LANGUAGE_ORDER)[number];
+
 export interface RawEmployeeRow {
   fullName: string;
   language: string;
@@ -11,21 +17,17 @@ export interface RawEmployeeRow {
   ref: string;
 }
 
+export interface RawTranslation {
+  text: string;
+  option1: string;
+  option2: string;
+  option3: string;
+}
+
 export interface RawQuestionRow {
   number: string;
   correctOption: string;
-  textCs: string;
-  opt1Cs: string;
-  opt2Cs: string;
-  opt3Cs: string;
-  textHu: string;
-  opt1Hu: string;
-  opt2Hu: string;
-  opt3Hu: string;
-  textPl: string;
-  opt1Pl: string;
-  opt2Pl: string;
-  opt3Pl: string;
+  translations: Record<SeedLanguage, RawTranslation>;
   ref: string;
 }
 
@@ -45,6 +47,27 @@ function findXlsxFile(dataDir: string): string | null {
   return file ? path.join(dataDir, file) : null;
 }
 
+/**
+ * Sestaví `translations` ze 4-sloupcových bloků (text, opt1, opt2, opt3) za
+ * sebou v pořadí `LANGUAGE_ORDER`, počínaje sloupcem `startColumn` (0-indexed).
+ * Používá se pro XLSX i CSV — obě mají stejné pořadí sloupců (§11.2, §11.4).
+ */
+function buildTranslations(row: string[], startColumn: number): Record<SeedLanguage, RawTranslation> {
+  const translations = {} as Record<SeedLanguage, RawTranslation>;
+  LANGUAGE_ORDER.forEach((lang, i) => {
+    const base = startColumn + i * 4;
+    translations[lang] = {
+      text: (row[base] ?? "").trim(),
+      option1: (row[base + 1] ?? "").trim(),
+      option2: (row[base + 2] ?? "").trim(),
+      option3: (row[base + 3] ?? "").trim(),
+    };
+  });
+  return translations;
+}
+
+const QUESTION_TEXT_START_COLUMN = 2; // 0=number, 1=correct_option, 2.. = jazykové bloky
+
 function parseQuestionsXlsxSheet(sheet: XLSX.WorkSheet, fileName: string): RawQuestionRow[] {
   // blankrows: true (výchozí) — jinak by SheetJS vynechané prázdné řádky
   // posunuly číslování a chybové hlášky by ukazovaly špatný řádek v Excelu.
@@ -54,24 +77,13 @@ function parseQuestionsXlsxSheet(sheet: XLSX.WorkSheet, fileName: string): RawQu
   for (let i = 2; i < rows.length; i++) {
     const r = (rows[i] as unknown[]).map((c) => String(c ?? "").trim());
     const excelRow = i + 1;
-    const textCs = r[2] ?? "";
-    // Sešit má předvyplněnou kostru 1–30 — prázdný text otázky přeskoč.
-    if (!textCs.trim()) continue;
+    // Sešit má předvyplněnou kostru 1–30 — prázdný český text otázky (ta je
+    // vždy první blok, "předloha") přeskoč.
+    if (!r[QUESTION_TEXT_START_COLUMN]?.trim()) continue;
     questions.push({
       number: r[0] ?? "",
       correctOption: r[1] ?? "",
-      textCs,
-      opt1Cs: r[3] ?? "",
-      opt2Cs: r[4] ?? "",
-      opt3Cs: r[5] ?? "",
-      textHu: r[6] ?? "",
-      opt1Hu: r[7] ?? "",
-      opt2Hu: r[8] ?? "",
-      opt3Hu: r[9] ?? "",
-      textPl: r[10] ?? "",
-      opt1Pl: r[11] ?? "",
-      opt2Pl: r[12] ?? "",
-      opt3Pl: r[13] ?? "",
+      translations: buildTranslations(r, QUESTION_TEXT_START_COLUMN),
       ref: `${fileName} list OTÁZKY, řádek ${excelRow}`,
     });
   }
@@ -106,23 +118,11 @@ function parseQuestionsCsv(filePath: string): RawQuestionRow[] {
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
     const lineNumber = i + 1;
-    const textCs = (r[2] ?? "").trim();
-    if (!textCs) continue; // stejné pravidlo jako u XLSX — kostra se smí plnit postupně
+    if (!r[QUESTION_TEXT_START_COLUMN]?.trim()) continue; // stejné pravidlo jako u XLSX — kostra se smí plnit postupně
     questions.push({
       number: (r[0] ?? "").trim(),
       correctOption: (r[1] ?? "").trim(),
-      textCs,
-      opt1Cs: (r[3] ?? "").trim(),
-      opt2Cs: (r[4] ?? "").trim(),
-      opt3Cs: (r[5] ?? "").trim(),
-      textHu: (r[6] ?? "").trim(),
-      opt1Hu: (r[7] ?? "").trim(),
-      opt2Hu: (r[8] ?? "").trim(),
-      opt3Hu: (r[9] ?? "").trim(),
-      textPl: (r[10] ?? "").trim(),
-      opt1Pl: (r[11] ?? "").trim(),
-      opt2Pl: (r[12] ?? "").trim(),
-      opt3Pl: (r[13] ?? "").trim(),
+      translations: buildTranslations(r, QUESTION_TEXT_START_COLUMN),
       ref: `${fileName}:${lineNumber}`,
     });
   }

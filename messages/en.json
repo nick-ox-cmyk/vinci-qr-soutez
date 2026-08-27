@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "ENVI QUIZ — VINCI Energies CEE"
+  },
+  "languages": {
+    "cs": "Czech",
+    "sk": "Slovak",
+    "pl": "Polish",
+    "hu": "Hungarian",
+    "ro": "Romanian",
+    "bg": "Bulgarian",
+    "en": "English"
+  },
+  "common": {
+    "browserTip": "Tip: open this page in a regular browser (Chrome / Safari) so the competition doesn't disappear.",
+    "poweredBy": "VINCI Energies",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "register": {
+    "welcomeHeading": "Welcome to ENVI QUIZ VINCI Energies CEE.",
+    "chooseLanguageLabel": "First, choose your language.",
+    "searchLabel": "Now introduce yourself.",
+    "searchPlaceholder": "Start typing your surname…",
+    "searchHint": "Type at least 2 letters of your first or last name.",
+    "searchLoading": "Searching…",
+    "searchEmpty": "We couldn't find anyone.",
+    "notFoundHelp": "Can't find your name? Email {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
+    "confirmHeading": "Is this you?",
+    "yourLanguage": "Your language",
+    "confirmButton": "Confirm and start",
+    "backButton": "Back to search",
+    "gdprNotice": "We process your name and answers only to evaluate this competition, and delete them within 30 days of the results being announced.",
+    "welcomeBack": "Welcome back, you're continuing your competition.",
+    "doneTitle": "You're registered!",
+    "doneBody": "Now go find QR codes around the premises and answer the questions."
+  },
+  "question": {
+    "questionLabel": "Question {number}",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Submit answer",
+    "submitting": "Submitting…",
+    "confirmTitle": "You won't be able to change your answer afterwards.",
+    "confirmBody": "Submit for real?",
+    "confirmCancel": "Cancel",
+    "confirmSubmit": "Submit",
+    "alreadyAnsweredTitle": "You've already answered this question.",
+    "alreadyAnsweredHint": "Good luck finding the others!",
+    "savedTitle": "Answer saved.",
+    "savedProgress": "You've answered {answered} of {total} questions.",
+    "resultsNotice": "We'll publish the correct answers together with the competition results on 22 September at Environment Day.",
+    "savedHint": "Onward to find the next code!",
+    "allDoneTitle": "All your answers are saved.",
+    "allDoneBody": "Thank you for your answers and your activity. We'll publish the correct answers together with the competition results on 22 September at Environment Day.",
+    "identifyFirst": "Now introduce yourself.",
+    "yourAnswer": "Your answer"
+  },
+  "locked": {
+    "tooEarlyTitle": "TOO EARLY!",
+    "tooEarlyBody": "You can start answering from {datetime}.",
+    "tooLateTitle": "The competition has ended…",
+    "tooLateBody": "Thank you for taking part! We'll publish the results on 22 September at Environment Day."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This QR code doesn't exist or is no longer active.",
+    "backHome": "Back to start"
+  }
+}

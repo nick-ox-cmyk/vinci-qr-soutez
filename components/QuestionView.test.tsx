@@ -48,7 +48,13 @@ describe("QuestionView", () => {
     fireEvent.click(screen.getByRole("button", { name: dict.question.confirmSubmit }));
 
     await waitFor(() => expect(submitAnswerMock).toHaveBeenCalledWith("abc234567", 2));
-    await waitFor(() => expect(screen.getByText(dict.question.savedTitle)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(
+        screen.getByText((_, el) => el?.textContent === "Odpověď uložena. Máš zodpovězeno 4 z 30 otázek.")
+      ).toBeInTheDocument()
+    );
+    expect(screen.getByText(dict.question.resultsNotice)).toBeInTheDocument();
+    expect(screen.getByText(dict.question.savedHint)).toBeInTheDocument();
   });
 
   it("state B: already answered shows the locked selection without revealing correctness", () => {
@@ -106,5 +112,22 @@ describe("QuestionView", () => {
     expect(screen.getByText(dict.question.alreadyAnsweredTitle)).toBeInTheDocument();
     expect(screen.getByText(dict.question.allDoneBody)).toBeInTheDocument();
     expect(screen.queryByText(dict.question.alreadyAnsweredHint)).not.toBeInTheDocument();
+  });
+
+  it("shrinks the font size for long question text so it doesn't dominate the screen", () => {
+    const longQuestion: QuestionDTO = {
+      ...question,
+      text: "The Paris Climate Agreement of 2015. You have certainly heard of it. But do you know what its main commitment was? The countries that ratified it pledged to do everything possible to ensure that, by the end of the 21st century, the global average temperature would not rise by more than:",
+    };
+    render(<QuestionView question={longQuestion} dict={dict} answeredCount={3} totalQuestions={30} existingAnswer={null} />);
+    const textEl = screen.getByText(longQuestion.text);
+    expect(textEl.className).toContain("text-base");
+    expect(textEl.className).not.toContain("text-xl");
+  });
+
+  it("keeps the default larger font size for short question text", () => {
+    render(<QuestionView question={question} dict={dict} answeredCount={3} totalQuestions={30} existingAnswer={null} />);
+    const textEl = screen.getByText(question.text);
+    expect(textEl.className).toContain("text-xl");
   });
 });

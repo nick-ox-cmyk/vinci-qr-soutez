@@ -10,10 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// CEE jazyková sada. `en` je výchozí jazyk přepínače na registraci (§10).
 enum Language {
   cs
-  hu
+  sk
   pl
+  hu
+  ro
+  bg
+  en
 }
 
 model Company {

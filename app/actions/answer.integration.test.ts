@@ -15,6 +15,9 @@ vi.mock("@/lib/session", () => ({
   getParticipantId: async () => currentParticipantId,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: () => {} }));
+// Tenhle test soubor cílí na submitAnswer/DB logiku, ne na časové okno
+// soutěže (to má vlastní testy v lib/competition-window.test.ts) — vždy "open".
+vi.mock("@/lib/competition-window", () => ({ getCompetitionPhase: () => "open" }));
 
 const prisma = new PrismaClient();
 

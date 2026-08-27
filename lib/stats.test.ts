@@ -60,11 +60,24 @@ describe("computeCompanyStats", () => {
       participant({ participantId: "b", companyName: "Big Co", answeredCount: 30, correctCount: 15 }),
       participant({ participantId: "c", companyName: "Small Co", answeredCount: 30, correctCount: 28 }),
     ];
-    const stats = computeCompanyStats(participants);
+    const stats = computeCompanyStats(participants, { "Big Co": 60, "Small Co": 5 });
     // Big Co má víc správných odpovědí celkem (30 vs 28) -> je první, i když má nižší úspěšnost.
     expect(stats[0].companyName).toBe("Big Co");
     expect(stats[0].successRate).toBeCloseTo(50);
     expect(stats[1].companyName).toBe("Small Co");
     expect(stats[1].successRate).toBeCloseTo(93.33, 1);
+  });
+
+  it("shows registered vs. total possible participants per company (§ company stats)", () => {
+    const participants = [participant({ participantId: "a", companyName: "Big Co" })];
+    const stats = computeCompanyStats(participants, { "Big Co": 60 });
+    expect(stats[0].participantCount).toBe(1);
+    expect(stats[0].totalEmployees).toBe(60);
+  });
+
+  it("includes companies with zero registered participants, showing 0 of the total", () => {
+    const stats = computeCompanyStats([], { "Ghost Co": 12 });
+    expect(stats).toHaveLength(1);
+    expect(stats[0]).toMatchObject({ companyName: "Ghost Co", participantCount: 0, totalEmployees: 12 });
   });
 });

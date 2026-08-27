@@ -1,26 +1,31 @@
 {
   "meta": {
-    "title": "VINCI Environment Day — QR soutěž"
+    "title": "ENVI QUIZ — VINCI Energies CEE"
   },
   "languages": {
     "cs": "Čeština",
+    "sk": "Slovenština",
+    "pl": "Polština",
     "hu": "Maďarština",
-    "pl": "Polština"
+    "ro": "Rumunština",
+    "bg": "Bulharština",
+    "en": "Angličtina"
   },
   "common": {
     "browserTip": "Tip: otevři si stránku v běžném prohlížeči (Chrome / Safari), aby ti soutěž nezmizela.",
-    "poweredBy": "VINCI Energies"
+    "poweredBy": "VINCI Energies",
+    "genericError": "Něco se nepovedlo. Zkus to prosím znovu."
   },
   "register": {
-    "eyebrow": "QR soutěž",
-    "heading": "VINCI Environment Day",
-    "intro": "Naskenoval jsi QR kód na akci? Nejdřív se nám ukaž.",
-    "searchLabel": "Najdi svoje jméno",
-    "searchPlaceholder": "Jméno a příjmení…",
+    "welcomeHeading": "Vítáme tě v ENVI QUIZ VINCI Energies CEE.",
+    "chooseLanguageLabel": "Nejdřív si vyber tvůj jazyk.",
+    "searchLabel": "Nejdřív se nám představ.",
+    "searchPlaceholder": "Začni psát své příjmení…",
     "searchHint": "Napiš alespoň 2 znaky jména nebo příjmení.",
     "searchLoading": "Hledám…",
     "searchEmpty": "Nikoho jsme nenašli.",
-    "notFoundHelp": "Nenašel jsi svoje jméno? Ozvi se organizátorovi.",
+    "notFoundHelp": "Tvé jméno se nezobrazilo? Napiš mail na {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
     "confirmHeading": "Jsi to ty?",
     "yourLanguage": "Tvůj jazyk",
     "confirmButton": "Potvrdit a začít",
@@ -39,15 +44,22 @@
     "confirmBody": "Opravdu odeslat?",
     "confirmCancel": "Zrušit",
     "confirmSubmit": "Odeslat",
-    "alreadyAnsweredTitle": "Na tuto otázku už jsi odpověděl(a).",
-    "alreadyAnsweredHint": "Hledej další QR kód.",
+    "alreadyAnsweredTitle": "Na tuto otázku jsi už odpověděl(a).",
+    "alreadyAnsweredHint": "Hodně štěstí při hledání dalších!",
     "savedTitle": "Odpověď uložena.",
     "savedProgress": "Máš zodpovězeno {answered} z {total} otázek.",
-    "savedHint": "Pokračuj v hledání dalšího QR kódu.",
+    "resultsNotice": "Správné odpovědi zveřejníme společně s výsledky soutěže 22. září při příležitosti Environment Day.",
+    "savedHint": "Vzhůru do hledání dalšího kódu!",
     "allDoneTitle": "Všechny odpovědi jsou uloženy.",
-    "allDoneBody": "Děkujeme za odpovědi a tvoji aktivitu. Správné odpovědi zveřejníme společně s výsledky soutěže při příležitosti Environment Day.",
-    "identifyFirst": "Nejdřív se představ",
+    "allDoneBody": "Děkujeme za odpovědi a tvoji aktivitu. Správné odpovědi zveřejníme společně s výsledky soutěže 22. září při příležitosti Environment Day.",
+    "identifyFirst": "Nejdřív se nám představ.",
     "yourAnswer": "Tvoje odpověď"
+  },
+  "locked": {
+    "tooEarlyTitle": "MOC BRZY!",
+    "tooEarlyBody": "Odpovídat můžeš od {datetime}.",
+    "tooLateTitle": "Soutěž je ukončena…",
+    "tooLateBody": "Děkujeme za účast! Výsledky zveřejníme 22. září při příležitosti Environment Day."
   },
   "notFound": {
     "title": "Stránka nenalezena",

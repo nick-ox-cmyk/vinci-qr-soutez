@@ -1,12 +1,19 @@
-﻿full_name;language;company;external_ref
+full_name;language;company;external_ref
 Jan Novák;cs;TPI Česká republika, s.r.o.;
 Petra Svobodová;cs;TPI Česká republika, s.r.o.;10241
 Jan Novák;cs;Actemium CZ, s.r.o.;10357
 Tomáš Dvořák;cs;VINCI Energies CZ, s.r.o.;
 Kateřina Procházková;cs;VINCI Energies CZ, s.r.o.;10488
-Balázs Kovács;hu;VINCI Energies Magyarország Kft.;20115
-Eszter Nagyné Tóth;hu;VINCI Energies Magyarország Kft.;
-Zoltán Szabó;hu;Actemium Hungary Kft.;20233
+Martin Horváth;sk;VINCI Energies Slovakia s.r.o.;40112
+Zuzana Kováčová;sk;Actemium Slovensko s.r.o.;40233
 Piotr Nowak;pl;VINCI Energies Polska Sp. z o.o.;30107
 Agnieszka Wiśniewska;pl;VINCI Energies Polska Sp. z o.o.;
 Łukasz Kamiński;pl;Actemium Polska Sp. z o.o.;30291
+Balázs Kovács;hu;VINCI Energies Magyarország Kft.;20115
+Eszter Nagyné Tóth;hu;VINCI Energies Magyarország Kft.;
+Zoltán Szabó;hu;Actemium Hungary Kft.;20233
+Andrei Popescu;ro;VINCI Energies Romania SRL;50145
+Ioana Dumitrescu;ro;Actemium Romania SRL;
+Georgi Ivanov;bg;VINCI Energies Bulgaria EOOD;60178
+Elena Petrova;bg;VINCI Energies Bulgaria EOOD;
+John Smith;en;VINCI Energies CEE Regional Office;70101

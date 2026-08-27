@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "ENVI QUIZ — VINCI Energies CEE"
+  },
+  "languages": {
+    "cs": "Чешки",
+    "sk": "Словашки",
+    "pl": "Полски",
+    "hu": "Унгарски",
+    "ro": "Румънски",
+    "bg": "Български",
+    "en": "Английски"
+  },
+  "common": {
+    "browserTip": "Съвет: отвори страницата в обикновен браузър (Chrome / Safari), за да не изчезне играта.",
+    "poweredBy": "VINCI Energies",
+    "genericError": "Нещо се обърка. Моля, опитай отново."
+  },
+  "register": {
+    "welcomeHeading": "Добре дошъл/дошла в ENVI QUIZ VINCI Energies CEE.",
+    "chooseLanguageLabel": "Първо избери своя език.",
+    "searchLabel": "Сега се представи.",
+    "searchPlaceholder": "Започни да пишеш фамилията си…",
+    "searchHint": "Въведи поне 2 букви от името или фамилията си.",
+    "searchLoading": "Търсене…",
+    "searchEmpty": "Не намерихме никого.",
+    "notFoundHelp": "Не намираш името си? Пиши имейл на {email}",
+    "notFoundEmail": "thavlickova@vinci-energies.cz",
+    "confirmHeading": "Ти ли си?",
+    "yourLanguage": "Твоят език",
+    "confirmButton": "Потвърди и започни",
+    "backButton": "Обратно към търсенето",
+    "gdprNotice": "Обработваме твоето име и отговори само за оценка на тази игра и ще ги изтрием до 30 дни след обявяването на резултатите.",
+    "welcomeBack": "Добре дошъл/дошла отново, продължаваш играта си.",
+    "doneTitle": "Регистриран/а си!",
+    "doneBody": "Сега вече търси QR кодовете из помещенията на компанията и отговаряй на въпросите."
+  },
+  "question": {
+    "questionLabel": "Въпрос {number}",
+    "progressLabel": "{answered} / {total}",
+    "submitButton": "Изпрати отговор",
+    "submitting": "Изпращане…",
+    "confirmTitle": "Отговорът вече не може да бъде променен.",
+    "confirmBody": "Наистина ли искаш да изпратиш?",
+    "confirmCancel": "Отказ",
+    "confirmSubmit": "Изпрати",
+    "alreadyAnsweredTitle": "Вече си отговорил/а на този въпрос.",
+    "alreadyAnsweredHint": "Успех в търсенето на останалите!",
+    "savedTitle": "Отговорът е запазен.",
+    "savedProgress": "Отговорил/а си на {answered} от {total} въпроса.",
+    "resultsNotice": "Ще публикуваме верните отговори заедно с резултатите от играта на 22 септември, по повод Environment Day.",
+    "savedHint": "Напред към търсенето на следващия код!",
+    "allDoneTitle": "Всички твои отговори са запазени.",
+    "allDoneBody": "Благодарим за отговорите и активността ти. Ще публикуваме верните отговори заедно с резултатите от играта на 22 септември, по повод Environment Day.",
+    "identifyFirst": "Сега се представи.",
+    "yourAnswer": "Твоят отговор"
+  },
+  "locked": {
+    "tooEarlyTitle": "ТВЪРДЕ РАНО!",
+    "tooEarlyBody": "Можеш да отговаряш от {datetime}.",
+    "tooLateTitle": "Играта приключи…",
+    "tooLateBody": "Благодарим за участието! Резултатите ще публикуваме на 22 септември, по повод Environment Day."
+  },
+  "notFound": {
+    "title": "Страницата не е намерена",
+    "body": "Този QR код не съществува или вече не е активен.",
+    "backHome": "Обратно към началото"
+  }
+}

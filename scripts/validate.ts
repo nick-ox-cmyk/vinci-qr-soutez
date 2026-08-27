@@ -1,6 +1,6 @@
 import "dotenv/config";
 import path from "path";
-import { loadSource } from "./lib/parse";
+import { loadSource, LANGUAGE_ORDER } from "./lib/parse";
 import { validateSource } from "./lib/validate";
 
 const DATA_DIR = process.env.SEED_DATA_DIR ? path.resolve(process.env.SEED_DATA_DIR) : path.join(process.cwd(), "data");
@@ -31,12 +31,11 @@ function main() {
     return acc;
   }, {});
   const companies = new Set(result.employees.map((e) => e.company));
+  const languageSummary = LANGUAGE_ORDER.map((lang) => `${lang}: ${languageCounts[lang] ?? 0}`).join(", ");
 
   console.log(`\n✓ Validace v pořádku.`);
-  console.log(
-    `  ${companies.size} firem, ${result.employees.length} zaměstnanců (cs: ${languageCounts.cs ?? 0}, hu: ${languageCounts.hu ?? 0}, pl: ${languageCounts.pl ?? 0})`
-  );
-  console.log(`  ${result.questions.length} otázek, ${result.questions.length * 3} překladů.`);
+  console.log(`  ${companies.size} firem, ${result.employees.length} zaměstnanců (${languageSummary})`);
+  console.log(`  ${result.questions.length} otázek, ${result.questions.length * LANGUAGE_ORDER.length} překladů.`);
   if (result.questions.length !== 30) {
     console.warn(`  ⚠ Pro 30 QR kódů se očekává 30 otázek, nalezeno ${result.questions.length}.`);
   }

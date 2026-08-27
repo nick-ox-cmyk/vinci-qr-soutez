@@ -3,13 +3,21 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getParticipantId } from "@/lib/session";
 import { toQuestionDTO } from "@/lib/dto";
-import { getDictionary } from "@/lib/i18n";
+import { getDictionary, DEFAULT_LANGUAGE } from "@/lib/i18n";
 import { isValidSlugFormat } from "@/lib/slug";
 import { getClientIp, questionPageRateLimiter } from "@/lib/ratelimit";
+import { getCompetitionPhase, getCompetitionStart, getCompetitionEnd } from "@/lib/competition-window";
 import { InlineRegister } from "@/components/InlineRegister";
 import { QuestionView } from "@/components/QuestionView";
+import { CompetitionLockedScreen } from "@/components/CompetitionLockedScreen";
 import { Card } from "@/components/Card";
 import { SetHtmlLang } from "@/components/SetHtmlLang";
+import type { Language } from "@prisma/client";
+
+// Stránka už je dynamická díky headers()/cookies(), ale explicitně to
+// deklarujeme — časový zámek soutěže se musí vyhodnocovat při každém
+// požadavku, nesmí se nikdy zafixovat z buildu.
+export const dynamic = "force-dynamic";
 
 function InlineRegisterShell() {
   return (
@@ -32,11 +40,18 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
   if (!isValidSlugFormat(slug)) notFound();
 
   const participantId = await getParticipantId();
-  if (!participantId) return <InlineRegisterShell />;
+  const participant = participantId ? await prisma.participant.findUnique({ where: { id: participantId } }) : null;
 
-  const participant = await prisma.participant.findUnique({ where: { id: participantId } });
-  // Cookie je platná, ale Participant už neexistuje (např. po `npm run purge`)
-  // — chovej se stejně jako úplně bez session.
+  // QR kódy visí den dopředu, ale odpovídat jde jen v daném časovém okně
+  // ("VĚC NA VÍC"). Známe-li už jazyk účastníka, ukaž hlášku rovnou v něm.
+  const phase = getCompetitionPhase();
+  if (phase === "before") {
+    return <CompetitionLockedScreen phase="before" date={getCompetitionStart()} knownLanguage={participant?.language} />;
+  }
+  if (phase === "after") {
+    return <CompetitionLockedScreen phase="after" date={getCompetitionEnd()} knownLanguage={participant?.language} />;
+  }
+
   if (!participant) return <InlineRegisterShell />;
 
   const question = await prisma.question.findUnique({
@@ -50,18 +65,19 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
 
   let translation = question.translations.find((tr) => tr.language === participant.language);
   if (!translation) {
+    const fallback: Language = DEFAULT_LANGUAGE;
     console.warn(
-      `[question] Chybí překlad otázky č. ${question.number} pro jazyk "${participant.language}", používám fallback cs.`
+      `[question] Chybí překlad otázky č. ${question.number} pro jazyk "${participant.language}", používám fallback ${fallback}.`
     );
-    translation = question.translations.find((tr) => tr.language === "cs");
+    translation = question.translations.find((tr) => tr.language === fallback);
   }
   if (!translation) notFound();
 
   const [existingAnswer, answeredCount, totalQuestions] = await Promise.all([
     prisma.answer.findUnique({
-      where: { participantId_questionId: { participantId, questionId: question.id } },
+      where: { participantId_questionId: { participantId: participant.id, questionId: question.id } },
     }),
-    prisma.answer.count({ where: { participantId } }),
+    prisma.answer.count({ where: { participantId: participant.id } }),
     prisma.question.count({ where: { active: true } }),
   ]);
 

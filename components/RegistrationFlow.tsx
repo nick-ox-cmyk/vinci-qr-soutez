@@ -4,13 +4,28 @@ import { useState, useTransition } from "react";
 import { EmployeeSearch } from "@/components/EmployeeSearch";
 import { Button } from "@/components/Button";
 import { SetHtmlLang } from "@/components/SetHtmlLang";
-import { getDictionary, t, SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { getDictionary, t, SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, type Dictionary } from "@/lib/i18n";
 import { getEmployeeConfirmation } from "@/app/actions/employees";
 import { registerParticipant } from "@/app/actions/register";
 import type { EmployeeSearchResultDTO } from "@/lib/dto";
 import type { Language } from "@prisma/client";
 
 type Step = "search" | "confirm" | "done";
+
+/** "Tvé jméno se nezobrazilo? Napiš mail na {email}" -> text + tappable mailto odkaz. */
+function NotFoundHelp({ dict }: { dict: Dictionary }) {
+  const email = dict.register.notFoundEmail;
+  const [before, after] = dict.register.notFoundHelp.split("{email}");
+  return (
+    <p className="text-sm text-text-muted">
+      {before}
+      <a href={`mailto:${email}`} className="text-vinci-blue underline underline-offset-2">
+        {email}
+      </a>
+      {after}
+    </p>
+  );
+}
 
 /**
  * Registrační průběh (§5.1) — používá se jak na `/` (mode="home"), tak
@@ -24,7 +39,7 @@ export function RegistrationFlow({
   onRegistered?: () => void;
 }) {
   const [step, setStep] = useState<Step>("search");
-  const [switcherLang, setSwitcherLang] = useState<Language>("cs");
+  const [switcherLang, setSwitcherLang] = useState<Language>(DEFAULT_LANGUAGE);
   const [selected, setSelected] = useState<{ employeeId: string; fullName: string; companyName: string; language: Language } | null>(
     null
   );
@@ -40,7 +55,7 @@ export function RegistrationFlow({
     setError(null);
     const preview = await getEmployeeConfirmation(employee.id);
     if (!preview) {
-      setError(searchDict.register.notFoundHelp);
+      setError(searchDict.common.genericError);
       return;
     }
     setSelected(preview);
@@ -52,7 +67,7 @@ export function RegistrationFlow({
     startTransition(async () => {
       const result = await registerParticipant(selected.employeeId);
       if (!result.ok) {
-        setError("Něco se nepovedlo. Zkus to prosím znovu.");
+        setError(activeDict.common.genericError);
         return;
       }
       setReclaimed(result.reclaimed);
@@ -75,38 +90,35 @@ export function RegistrationFlow({
       <SetHtmlLang lang={activeLang} />
 
       {step === "search" && (
-        <div className="space-y-4">
-          {/* Jazyk ještě neznáme — zaměstnance jsme nedohledali (§10). Přepínač
-              patří na obě místa, kde se hledá jméno: registraci i inline
-              identifikaci při ztrátě session na /q/[slug]. */}
-          <div className="flex justify-center gap-2" role="group" aria-label="Jazyk / Nyelv / Język">
-            {SUPPORTED_LANGUAGES.map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => setSwitcherLang(lang)}
-                className={`rounded-full px-4 py-1.5 text-sm font-semibold uppercase transition-colors ${
-                  switcherLang === lang
-                    ? "bg-vinci-blue text-white"
-                    : "border border-border bg-surface text-vinci-blue-ink"
-                }`}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
-
+        <div className="space-y-5">
           {mode === "home" && (
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-eco-teal">{searchDict.register.eyebrow}</p>
-              <p className="mt-1 text-vinci-blue-ink">{searchDict.register.intro}</p>
-            </div>
+            <h1 className="text-center font-serif text-2xl font-bold text-vinci-blue">
+              {searchDict.register.welcomeHeading}
+            </h1>
           )}
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-vinci-blue-ink">
-              {mode === "inline" ? searchDict.question.identifyFirst : searchDict.register.searchLabel}
-            </label>
+            <p className="mb-2 text-sm font-semibold text-vinci-blue-ink">{searchDict.register.chooseLanguageLabel}</p>
+            <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Language">
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setSwitcherLang(lang)}
+                  className={`rounded-full px-3 py-1.5 text-sm font-semibold uppercase transition-colors ${
+                    switcherLang === lang
+                      ? "bg-vinci-blue text-white"
+                      : "border border-border bg-surface text-vinci-blue-ink"
+                  }`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-vinci-blue-ink">{searchDict.register.searchLabel}</label>
             <EmployeeSearch
               onSelect={handleSelect}
               placeholder={searchDict.register.searchPlaceholder}
@@ -118,7 +130,7 @@ export function RegistrationFlow({
 
           {error && <p className="text-sm text-vinci-red">{error}</p>}
 
-          <p className="text-sm text-text-muted">{searchDict.register.notFoundHelp}</p>
+          <NotFoundHelp dict={searchDict} />
         </div>
       )}
 

@@ -3,8 +3,8 @@ import { sourceSans, sourceSerif } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VINCI Environment Day — QR soutěž",
-  description: "Interní QR soutěž VINCI Environment Day pro VINCI Energies CZ.",
+  title: "ENVI QUIZ — VINCI Energies CEE",
+  description: "Interní QR soutěž ENVI QUIZ pro VINCI Energies CEE.",
   robots: { index: false, follow: false },
   manifest: "/site.webmanifest",
   icons: {
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="cs" className={`${sourceSans.variable} ${sourceSerif.variable} h-full antialiased`}>
+    <html lang="en" className={`${sourceSans.variable} ${sourceSerif.variable} h-full antialiased`}>
       <body className="min-h-dscreen flex flex-col bg-surface-muted text-vinci-blue-ink">{children}</body>
     </html>
   );

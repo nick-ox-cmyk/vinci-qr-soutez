@@ -6,6 +6,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getParticipantId } from "@/lib/session";
 import { submitAnswerRateLimiter } from "@/lib/ratelimit";
+import { getCompetitionPhase } from "@/lib/competition-window";
 
 const schema = z.object({
   slug: z.string().min(1),
@@ -14,14 +15,21 @@ const schema = z.object({
 
 export type SubmitAnswerResult =
   | { status: "saved"; answeredCount: number; totalQuestions: number }
-  | { status: "already_answered"; answeredCount: number; totalQuestions: number }
-  | { status: "error"; error: "NO_SESSION" | "INVALID_INPUT" | "NOT_FOUND" | "RATE_LIMITED" };
+  | {
+      status: "error";
+      error: "NO_SESSION" | "INVALID_INPUT" | "NOT_FOUND" | "RATE_LIMITED" | "COMPETITION_LOCKED";
+    }
+  | { status: "already_answered"; answeredCount: number; totalQuestions: number };
 
 /**
  * §6.2 — veškerá validace jen na serveru, klientu se nevěří nic.
  * `correctOption` / `isCorrect` se v návratové hodnotě NIKDY neposílá.
  */
 export async function submitAnswer(slug: string, selectedOption: number): Promise<SubmitAnswerResult> {
+  // Obrana do hloubky — normálně se sem vůbec nedostane, protože stránka
+  // mimo okno soutěže formulář nevykreslí (viz CompetitionLockedScreen).
+  if (getCompetitionPhase() !== "open") return { status: "error", error: "COMPETITION_LOCKED" };
+
   const parsed = schema.safeParse({ slug, selectedOption });
   if (!parsed.success) return { status: "error", error: "INVALID_INPUT" };
 
