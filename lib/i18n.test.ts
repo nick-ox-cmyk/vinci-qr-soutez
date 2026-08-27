@@ -19,8 +19,13 @@ function collectKeyPaths(obj: unknown, prefix = ""): string[] {
 
 describe("message dictionaries", () => {
   it("all 7 CEE languages are wired up, with en as default", () => {
-    expect(SUPPORTED_LANGUAGES.sort()).toEqual(["bg", "cs", "en", "hu", "pl", "ro", "sk"]);
+    // .sort() muts in place — kopie, ať se netrefí do skutečného exportu.
+    expect([...SUPPORTED_LANGUAGES].sort()).toEqual(["bg", "cs", "en", "hu", "pl", "ro", "sk"]);
     expect(DEFAULT_LANGUAGE).toBe("en");
+  });
+
+  it("switcher order: en first, then alphabetically by code", () => {
+    expect(SUPPORTED_LANGUAGES).toEqual(["en", "bg", "cs", "hu", "pl", "ro", "sk"]);
   });
 
   it("all languages expose an identical set of keys (§10, §13)", () => {

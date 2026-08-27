@@ -5,6 +5,7 @@ import type { Language } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { setParticipantCookie } from "@/lib/session";
 import { getCompetitionPhase } from "@/lib/competition-window";
+import { isBypassActive } from "@/lib/bypass";
 
 const schema = z.object({ employeeId: z.string().min(1) });
 
@@ -21,7 +22,9 @@ export type RegisterResult =
 export async function registerParticipant(employeeId: string): Promise<RegisterResult> {
   // Obrana do hloubky — normálně se sem vůbec nedostane, protože stránka
   // mimo okno soutěže formulář nevykreslí (viz CompetitionLockedScreen).
-  if (getCompetitionPhase() !== "open") return { ok: false, error: "COMPETITION_LOCKED" };
+  if (getCompetitionPhase() !== "open" && !(await isBypassActive())) {
+    return { ok: false, error: "COMPETITION_LOCKED" };
+  }
 
   const parsed = schema.safeParse({ employeeId });
   if (!parsed.success) return { ok: false, error: "INVALID_INPUT" };

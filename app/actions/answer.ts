@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { getParticipantId } from "@/lib/session";
 import { submitAnswerRateLimiter } from "@/lib/ratelimit";
 import { getCompetitionPhase } from "@/lib/competition-window";
+import { isBypassActive } from "@/lib/bypass";
 
 const schema = z.object({
   slug: z.string().min(1),
@@ -28,7 +29,9 @@ export type SubmitAnswerResult =
 export async function submitAnswer(slug: string, selectedOption: number): Promise<SubmitAnswerResult> {
   // Obrana do hloubky — normálně se sem vůbec nedostane, protože stránka
   // mimo okno soutěže formulář nevykreslí (viz CompetitionLockedScreen).
-  if (getCompetitionPhase() !== "open") return { status: "error", error: "COMPETITION_LOCKED" };
+  if (getCompetitionPhase() !== "open" && !(await isBypassActive())) {
+    return { status: "error", error: "COMPETITION_LOCKED" };
+  }
 
   const parsed = schema.safeParse({ slug, selectedOption });
   if (!parsed.success) return { status: "error", error: "INVALID_INPUT" };

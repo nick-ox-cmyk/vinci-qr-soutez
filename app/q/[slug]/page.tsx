@@ -7,6 +7,7 @@ import { getDictionary, DEFAULT_LANGUAGE } from "@/lib/i18n";
 import { isValidSlugFormat } from "@/lib/slug";
 import { getClientIp, questionPageRateLimiter } from "@/lib/ratelimit";
 import { getCompetitionPhase, getCompetitionStart, getCompetitionEnd } from "@/lib/competition-window";
+import { isBypassActive } from "@/lib/bypass";
 import { InlineRegister } from "@/components/InlineRegister";
 import { QuestionView } from "@/components/QuestionView";
 import { CompetitionLockedScreen } from "@/components/CompetitionLockedScreen";
@@ -45,10 +46,11 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
   // QR kódy visí den dopředu, ale odpovídat jde jen v daném časovém okně
   // ("VĚC NA VÍC"). Známe-li už jazyk účastníka, ukaž hlášku rovnou v něm.
   const phase = getCompetitionPhase();
-  if (phase === "before") {
-    return <CompetitionLockedScreen phase="before" date={getCompetitionStart()} knownLanguage={participant?.language} />;
-  }
-  if (phase === "after") {
+  const locked = phase !== "open" && !(await isBypassActive());
+  if (locked) {
+    if (phase === "before") {
+      return <CompetitionLockedScreen phase="before" date={getCompetitionStart()} knownLanguage={participant?.language} />;
+    }
     return <CompetitionLockedScreen phase="after" date={getCompetitionEnd()} knownLanguage={participant?.language} />;
   }
 

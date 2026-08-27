@@ -221,6 +221,25 @@ COMPETITION_START_AT="2020-01-01T00:00:00.000Z"
 COMPETITION_END_AT="2030-01-01T00:00:00.000Z"
 ```
 
+### Obejití zámku na nasazené (ostré) URL
+
+Měnit `COMPETITION_START_AT`/`END_AT` na Vercelu jen kvůli otestování appky před termínem
+znamená pokaždé redeploy a riziko, že se pozapomene vrátit zpět. Místo toho existuje `COMPETITION_BYPASS_TOKEN` —
+nepovinná env proměnná, po jejímž nastavení jde zámek dočasně obejít **jen v tom prohlížeči**, kde
+o tom někdo ví:
+
+1. `npm run gen:secrets` vypíše i `COMPETITION_BYPASS_TOKEN` — vlož ho do Vercel env (Production).
+2. Kdokoli s odkazem `https://<tvoje-doména>/api/bypass?token=<ten_token>` dostane HttpOnly
+   cookie a appka se mu chová, jako by okno soutěže bylo otevřené — registrace i odpovídání
+   fungují normálně, včetně kontroly na serveru (`registerParticipant`/`submitAnswer`), ne jen
+   na stránce.
+3. Bez správného tokenu v URL se nic nestane (tichý redirect na `/`) — jde to bezpečně poslat
+   komukoli k otestování, nikomu jinému to nefunguje.
+
+**Až bude appka na ostré doméně, `COMPETITION_BYPASS_TOKEN` z Vercel env smaž.** Bez něj
+`isValidBypassToken` (`lib/session.ts`) vrací vždy `false` — i staré cookie od testerů z kroku 2
+tím okamžitě přestanou platit, žádná změna kódu ani redeploy navíc není potřeba.
+
 ---
 
 ## Otevřené body / vědomé kompromisy

@@ -7,9 +7,11 @@ import ro from "@/messages/ro.json";
 import bg from "@/messages/bg.json";
 import en from "@/messages/en.json";
 
-// Pořadí odpovídá zadání CZ(cs)-SK-PL-HU-RO-BG-EN. `en` je výchozí jazyk
-// přepínače na registraci i fallback při chybějícím překladu.
-export const SUPPORTED_LANGUAGES: Language[] = ["cs", "sk", "pl", "hu", "ro", "bg", "en"];
+// Pořadí v přepínači: EN první (výchozí jazyk), zbytek abecedně podle kódu.
+// Pozor — nesouvisí s LANGUAGE_ORDER ve scripts/lib/parse.ts, což je pořadí
+// sloupců v CSV/XLSX (CZ-SK-PL-HU-RO-BG-EN, dané zvyklostí zadavatele dat,
+// ne zobrazením); měnit se nemusí spolu.
+export const SUPPORTED_LANGUAGES: Language[] = ["en", "bg", "cs", "hu", "pl", "ro", "sk"];
 export const DEFAULT_LANGUAGE: Language = "en";
 
 const dictionaries: Record<Language, typeof en> = { cs, sk, pl, hu, ro, bg, en };

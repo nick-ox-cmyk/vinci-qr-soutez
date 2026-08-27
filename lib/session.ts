@@ -121,3 +121,14 @@ export function isValidAdminPassword(password: string): boolean {
   if (!expected) return false;
   return constantTimeEquals(password, expected);
 }
+
+/**
+ * Dočasné obejití časového zámku soutěže (§9, `lib/bypass.ts`) pro
+ * testování před ostrým termínem. Bez `COMPETITION_BYPASS_TOKEN` v env vždy
+ * `false` — tak se to "schová" pro ostrou doménu: stačí proměnnou smazat.
+ */
+export function isValidBypassToken(token: string): boolean {
+  const expected = process.env.COMPETITION_BYPASS_TOKEN;
+  if (!expected) return false;
+  return constantTimeEquals(token, expected);
+}
