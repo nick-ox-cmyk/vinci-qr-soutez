@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 20m
+          script: |
+            set -e
+            export PATH=/opt/node-v22/bin:/usr/local/bin:/usr/bin:/bin
+            cd /opt/enviquiz
+            git fetch origin main
+            git reset --hard origin/main
+            NODE_ENV=development npm ci
+            npx prisma migrate deploy
+            npm run build
+            pm2 restart enviquiz --update-env
