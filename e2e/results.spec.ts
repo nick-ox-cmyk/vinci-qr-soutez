@@ -24,7 +24,7 @@ test.describe("results dashboard access (§7.1, §13)", () => {
     await page.getByRole("button", { name: "Přihlásit" }).click();
 
     await expect(page).toHaveURL(new RegExp(`/r/${TOKEN}$`));
-    await expect(page.getByRole("heading", { name: "Výsledky — VINCI Environment Day" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Výsledky — ENVI QUIZ" })).toBeVisible();
     await expect(page.getByText("Zaregistrovaní")).toBeVisible();
   });
 });

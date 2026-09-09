@@ -9,10 +9,17 @@ test("question without a session-cookie: inline identification loads the questio
   const slug = getFixtureSlug(2);
 
   await page.goto(`/q/${slug}`);
+  // Statický text (vč. toHaveURL níže) je vidět hned ze server-renderované
+  // HTML, ještě předtím, než doběhne hydratace klientského JS — čekej na
+  // networkidle, ať vyhledávání ve formuláři nezačne dřív, než se na input
+  // připojí React posluchač.
+  await page.waitForLoadState("networkidle");
 
   // Nepřesměrovává na holou "/" — řeší se inline, přímo na stránce otázky.
   await expect(page).toHaveURL(new RegExp(`/q/${slug}$`));
-  await expect(page.getByText("Nejdřív se představ")).toBeVisible();
+  // Výchozí jazyk přepínače je teď EN (§7 jazyků, EN default), ne čeština —
+  // dokud si účastník nevybere jinak nebo nevybere sám sebe v hledání.
+  await expect(page.getByText("Now introduce yourself.")).toBeVisible();
 
   const search = page.getByRole("combobox");
   await search.fill(FIXTURE_EMPLOYEES.hu.searchTerm);

@@ -6,6 +6,7 @@ test("complete journey: register -> question -> submit -> saved -> already answe
 
   await test.step("registration on / via the employee search", async () => {
     await page.goto("/");
+    await page.waitForLoadState("networkidle");
     const search = page.getByRole("combobox");
     await search.fill(FIXTURE_EMPLOYEES.cs.searchTerm);
     await expect(page.getByRole("option").first()).toBeVisible();
