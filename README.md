@@ -7,14 +7,16 @@ Plná specifikace: [`PROMPT-vinci-qr-soutez.md`](./PROMPT-vinci-qr-soutez.md) �
 je původní zadání a v pár detailech je od dohody v tomhle README zastaralý (nejvýrazněji: mluví
 o 30 otázkách, ostrý počet je teď 20 — viz [§10 Doména a nasazení](#10-doména-a-nasazení)).
 
-**Doména**: `enviquiz.com` (potvrzeno, DNS zatím nesměřuje na appku). **Zatím se pořád testuje na
-dočasné `*.vercel.app` adrese** — viz [§10](#10-doména-a-nasazení), než se `enviquiz.com` reálně
-zapojí.
+**Doména**: `enviquiz.com` **je živá a míří na appku** — hosting se od 30. 8. přesunul z Vercelu/Neonu
+na vlastní VPS, viz [§10 Doména a nasazení](#10-doména-a-nasazení) pro aktuální stav i historii
+téhle změny.
 
 **7 jazyků**: CZ · SK · PL · HU · RO · BG · EN (výchozí). Očekávaný rozsah: až ~4000 účastníků,
 soutěž běží jeden týden s peakem v pondělí — viz [§8 Výkon a zátěž](#8-výkon-a-zátěž-4000-účastníků).
 
-Stack: **Next.js 15 (App Router) · TypeScript · Prisma + PostgreSQL (Neon) · Tailwind CSS v4 · Recharts**.
+Stack: **Next.js 15 (App Router) · TypeScript · Prisma + PostgreSQL · Tailwind CSS v4 · Recharts**.
+Produkční PostgreSQL běží samostatně na VPS (§10) — projekt původně vznikl na Vercelu + Neonu,
+ta cesta je zachovaná jako alternativa v [§2](#2-nasazení-na-vercel--neon).
 
 ---
 
@@ -28,11 +30,11 @@ orientace „kde co je" a „co ještě zbývá udělat".
 
 | Co | Kde | Poznámka |
 |---|---|---|
-| **Kód** | [github.com/nick-ox-cmyk/vinci-qr-soutez](https://github.com/nick-ox-cmyk/vinci-qr-soutez), větev `main` | Nasazuje se přímo z `main` (žádný staging branch). |
-| **Hosting** | Vercel, projekt `vinci-qr-soutez` (team `nick-coxs-projects-c657872a`) | Aktuální produkční adresa (dočasná, ne ostrá doména): `https://vinci-qr-soutez.vercel.app`. Pokud v týmu ještě nejsi, vyžádej si pozvánku od zadavatele. |
-| **Databáze** | Neon, projekt `vinci-qr-soutez` (id `snowy-frog-38149029`, region `aws-eu-central-1`) | Serverless Postgres s branchingem — viz [§8](#8-výkon-a-zátěž-4000-účastníků) k plánu/škálování. |
-| **Doména** | `enviquiz.com` | Vlastní zadavatel, DNS zatím nesměřuje na appku — postup napojení je celý v [§10](#10-doména-a-nasazení). |
-| **Tajné hodnoty (secrets)** | Vercel → Project → Settings → Environment Variables (Production) | Aktuálně nastaveno: `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_URL_TOKEN`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_BASE_URL`, `COMPETITION_BYPASS_TOKEN`. Skutečné hodnoty nejsou nikde v repu (`.env` je v `.gitignore`) — stáhni je přes `vercel env pull .env.local` (potřebuješ přístup do Vercel týmu) nebo si vyžádej od zadavatele. |
+| **Kód** | [github.com/nick-ox-cmyk/vinci-qr-soutez](https://github.com/nick-ox-cmyk/vinci-qr-soutez), větev `main` | **Repo je od 30. 8. veřejné** (kvůli viditelnosti GitHub Actions běhů komukoli s odkazem) — pokud to vadí, dá se vrátit na privátní, jen se pak musí řešit přístup jinak (Actions runy vidí jen lidé s právy do repa). V historii nejsou žádné reálné secrets (ověřeno, viz [§10](#10-doména-a-nasazení)). |
+| **Hosting** | Vlastní VPS, `157.90.169.205`, kód v `/opt/enviquiz`, proces `enviquiz` pod PM2, port 4600, Node 22; nginx + Let's Encrypt vpředu | Nasazeno automaticky z `main` přes GitHub Actions (`.github/workflows/deploy.yml`) — viz [§10](#10-doména-a-nasazení). Starý Vercel projekt (`vinci-qr-soutez`, team `nick-coxs-projects-c657872a`, `vinci-qr-soutez.vercel.app`) pořád běží souběžně, ale nic na něj neukazuje — kandidát na vypnutí. |
+| **Databáze** | Samostatný PostgreSQL 16 přímo na VPS, databáze `vinci_qr`, vlastní uživatel | **Není to už Neon** — produkční data od ~2. 9. žijí jen tady, Neon projekt (`vinci-qr-soutez`, id `snowy-frog-38149029`) je od té doby nečinný a obsahuje jen starou testovací kopii. Zálohování téhle DB (na rozdíl od Neonu) teď není automatické — ověř, jestli VPS má nastavené pravidelné `pg_dump`/snapshoty, než se spolehneš na `npm run purge` nebo cokoliv nevratného. |
+| **Doména** | `enviquiz.com` + `www.enviquiz.com` | Živá, DNS míří na VPS výše, TLS přes Let's Encrypt s automatickou obnovou. |
+| **Tajné hodnoty (secrets)** | `.env` přímo na VPS (`/opt/enviquiz/.env`, mimo git) + GitHub → repo → Settings → Secrets and variables → Actions (`SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`) | **Všechny hodnoty jsou od 30. 8. jiné než dřív** — starý Vercel `ADMIN_URL_TOKEN`/`ADMIN_PASSWORD`/bypass token **už neplatí**. Nové přihlašovací údaje k `/r/<token>` má zadavatel; k `.env` na serveru samotném potřebuješ SSH přístup na VPS. |
 | **Dotazy k obsahu/rozhodnutím** | Daniel (zadavatel), `daniel.kokes@gmail.com` | Zejména cokoliv kolem otevřených bodů níže — placeholder otázky, termín akce, kontaktní e-mail v appce (`thavlickova@vinci-energies.cz`, viz [§5](#5-co-se-stane-když)). |
 
 ### Rychlý start
@@ -41,62 +43,58 @@ orientace „kde co je" a „co ještě zbývá udělat".
 git clone https://github.com/nick-ox-cmyk/vinci-qr-soutez.git
 cd vinci-qr-soutez
 npm install
-npx vercel link              # napoj lokální repo na Vercel projekt (potřebuje přístup do týmu)
-npx vercel env pull .env.local
+cp .env.example .env         # a vyplň hodnotami z /opt/enviquiz/.env na VPS (potřebuješ SSH přístup)
 npm run dev                  # http://localhost:3000
 ```
 
-Pokud přístup do Vercelu ještě nemáš, postupuj podle [§1 Lokální spuštění](#1-lokální-spuštění) —
-založ si `.env` ručně (lokální Postgres přes `docker compose up -d` stačí na vyzkoušení celého
-průchodu appkou, není potřeba mít hned přístup k ostré databázi).
+Pokud SSH přístup na VPS ještě nemáš, postupuj podle [§1 Lokální spuštění](#1-lokální-spuštění) —
+založ si `.env` s lokální Postgres přes `docker compose up -d`, to stačí na vyzkoušení celého
+průchodu appkou bez přístupu k ostré databázi. Nasazování samotné (§10) přístup na VPS vyžaduje,
+ale běžný vývoj/testování appky ne.
 
-### Tři úkoly, které tě pravděpodobně čekají
+### Stav ke dni napojení domény (2.–9. 9.)
 
-1. **Nasazení / redeploy** — `npx vercel deploy --prod` (nebo přes GitHub integraci, pokud ji
-   zadavatel zapnul — pak stačí push do `main`). Build spouští `prisma generate && next build`
-   (viz `package.json`), migrace do produkční DB je potřeba pustit zvlášť —
-   `npx prisma migrate deploy` proti produkční `DATABASE_URL` (§2, krok 4).
-2. **Napojení domény `enviquiz.com`** — celý postup je hotový checklist v
-   [§10 Doména a nasazení](#10-doména-a-nasazení). Klíčové pořadí: DNS → `NEXT_PUBLIC_BASE_URL` →
-   redeploy → **teprve pak** `npm run qr` (jinak se QR kódy vytisknou se špatnou doménou).
-3. **Škálování databáze, pokud current tier nestačí** — nejdřív zkontroluj
-   [`docs/LOAD-TEST.md`](./docs/LOAD-TEST.md) (zátěžový test na ~4000 účastníků + konkrétní
-   doporučení). Prakticky:
-   - **Výkon/kapacita** (appka je pomalá nebo padá pod zátěží, ne že by chyběla data) → Neon
-     Console → project `vinci-qr-soutez` → Compute → zvyš `autoscalingLimitMaxCu` a/nebo vypni
-     scale-to-zero na dobu akce. Nejde o změnu schématu ani kódu, jen o nastavení instance.
-   - **Struktura dat nestačí** (potřeba nové pole/tabulka) → uprav `prisma/schema.prisma`, lokálně
-     `npx prisma migrate dev --name <popis>` (vytvoří migraci v `prisma/migrations/`), ověř na
-     Neon **branchi** (`npx neon branches create`, ne rovnou na produkci), pak
-     `npx prisma migrate deploy` proti produkční `DATABASE_URL`. Nikdy needituj schéma přímo přes
-     Neon Console SQL editor bez odpovídající Prisma migrace — příští `migrate deploy` by pak
-     spadl na nesouladu.
-   - **Free/nejnižší Neon tier přestává stačit úplně** (ne jen potřebuje jiné nastavení) → upgrade
-     plánu se dělá v Neon Console → Billing, connection string (`DATABASE_URL`) se nemění, appka
-     nepozná rozdíl, stačí redeploy není potřeba vůbec.
+Nasazení, doména i rychlejší databáze **už jsou hotové** (viz tabulka výše a [§10](#10-doména-a-nasazení))
+— appka teď reálně běží na `enviquiz.com`. Zbývá hlavně obsah a provozní úklid před ostrým startem:
 
-### Než appka půjde ostro — konsolidovaný checklist
+1. **Skutečné otázky 1–20 a kompletní seznam zaměstnanců od zadavatele** — teď je v `data/` pořád
+   vzorový obsah, otázky 4–20 jsou čistě AI placeholder (bod 8 v Otevřených bodech níže). Až dorazí
+   reálný obsah: aktualizuj `data/VINCI-Environment-Day-otazky.xlsx`, pak na VPS
+   `npm run validate` a `npm run seed` (přes SSH, nebo si to zapoj do deploy workflow).
+2. **Rodilý mluvčí zkontroluje překlady SK/RO/BG** (`messages/sk.json`, `messages/ro.json`,
+   `messages/bg.json`) — zatím jsou jen AI přeložené.
+3. **`npm run qr` na VPS až po finálním obsahu** — doména už je ostrá, takže vygenerované QR kódy
+   budou rovnou správně bez dalšího přegenerování. Pak vytisknout a rozvěsit (§3).
+4. **Před ostrým startem**: `npm run purge` (smaže testovací registrace nasbírané při vývoji) a
+   odstranit `COMPETITION_BYPASS_TOKEN` z `.env` na VPS (§9) — bez něj přestane fungovat i stará
+   bypass cookie u kohokoli, kdo appku předtím testoval.
+5. **Rozhodnout o starém Vercel projektu a Neon databázi** — obě pořád existují a nic na ně
+   neukazuje. Bezpečné vypnout, jen ať neběží dvě kopie appky/dvě účtované databáze zbytečně.
+6. **Zálohy produkční databáze** — Neon měl branching/PITR zabudovaný, samostatný Postgres na VPS
+   ho nemá automaticky. Ověř na serveru, jestli je nastavené pravidelné zálohování (`pg_dump` cron,
+   snapshoty VPS providera), než začnou chodit ostré registrace.
 
-Detaily jsou v [„Otevřené body / vědomé kompromisy"](#otevřené-body--vědomé-kompromisy) na konci
-tohoto souboru, tady je jen pořadí, ve kterém to dává smysl řešit:
+### Pokud přece jen budeš řešit škálování databáze
 
-1. Zkontrolovat/nahradit otázky 4–20 (AI placeholder, viz bod 8 níže) a UI překlady pro SK/RO/BG
-   (AI překlad, ne rodilý mluvčí).
-2. Napojit `enviquiz.com` (viz úkol 2 výše).
-3. `npm run qr` na ostré doméně → vytisknout a rozvěsit plakáty.
-4. `npm run purge` — smazat testovací registrace nasbírané během vývoje/testování (v produkční DB
-   jich v době předání bylo 7, jména z ukázkových dat jako „Jan Novák" — `Employee`/`Company`
-   zůstanou, mažou se jen `Participant`/`Answer`, viz [§5](#5-co-se-stane-když)).
-5. Smazat `COMPETITION_BYPASS_TOKEN` z Vercel env (§9) — bez něj přestane fungovat i stará bypass
-   cookie u kohokoli, kdo appku předtím testoval.
-6. Zvážit navýšení Neon compute/autoscaling na dobu akce (úkol 3 výše).
+I když produkční DB teď běží lokálně na VPS (ne na Neonu), postup při nedostatečném výkonu je
+principiálně stejný — jen nástroje jsou jiné:
+
+- **Výkon/kapacita** (appka je pod zátěží pomalá, ne že by chyběla data) → zkontroluj zdroje VPS
+  (CPU/RAM/disk I/O) a `max_connections`/sdílenou paměť Postgresu; případně přejít na větší VPS.
+  [`docs/LOAD-TEST.md`](./docs/LOAD-TEST.md) obsahuje metodiku zátěžového testu (byl dělaný ještě
+  proti Neonu, ale postup — testovat DB vrstvu přímo, ne přes HTTP — platí stejně).
+- **Struktura dat nestačí** (potřeba nové pole/tabulka) → uprav `prisma/schema.prisma`, lokálně
+  `npx prisma migrate dev --name <popis>` (vytvoří migraci v `prisma/migrations/`), ověř na
+  zahazovatelné kopii DB, commitni migraci a nech ji aplikovat přes běžný deploy (`prisma migrate
+  deploy` je součástí `.github/workflows/deploy.yml`, §10). Nikdy needituj schéma appky přímo SQL
+  příkazem na VPS bez odpovídající Prisma migrace v repu — příští deploy by pak spadl na nesouladu.
 
 ### Užitečné příkazy
 
 | Příkaz | Co dělá |
 |---|---|
 | `npm run dev` | Lokální vývojový server |
-| `npm run build` | Produkční build (stejný, jaký pouští Vercel) |
+| `npm run build` | Produkční build (stejný krok, jaký pouští deploy workflow na VPS) |
 | `npm test` / `npm run test:e2e` | Vitest / Playwright — viz [§6](#6-testy) |
 | `npm run validate` | Zkontroluje `data/*.csv`/`*.xlsx` bez zápisu do DB |
 | `npm run seed` | Zapíše zaměstnance/otázky do DB, vygeneruje `data/question-slugs.json` |
@@ -104,7 +102,7 @@ tohoto souboru, tady je jen pořadí, ve kterém to dává smysl řešit:
 | `npm run purge` | Smaže `Participant`/`Answer` (GDPR úklid po akci) |
 | `npm run load-test` | Zátěžový test proti (ideálně) izolované Neon větvi, viz `docs/LOAD-TEST.md` |
 | `npx prisma studio` | Vizuální prohlížeč obsahu databáze |
-| `npx vercel deploy --prod` | Ruční nasazení na produkci |
+| `git push origin main` | Nasadí na produkci (VPS) automaticky přes GitHub Actions, §10 |
 
 ---
 
@@ -148,6 +146,11 @@ je nahraď skutečným obsahem — viz [§3 Postup přípravy akce](#3-postup-p�
 ---
 
 ## 2. Nasazení na Vercel + Neon
+
+> Tohle byla **původní** nasazovací cesta a appka na ní i dnes technicky funguje (odkazovaný Vercel
+> projekt pořád běží), ale **produkce od 30. 8. běží jinde** — na vlastním VPS, viz
+> [§10 Doména a nasazení](#10-doména-a-nasazení). Tuhle sekci nech jako zálohu/alternativu (např.
+> kdyby se VPS řešení nevyplatilo), ne jako popis aktuálního stavu.
 
 1. **Databáze** — založ projekt na [Neon](https://neon.tech) (nebo použij Vercel Postgres). Zkopíruj
    connection string do `DATABASE_URL`.
@@ -277,6 +280,12 @@ vlastní fixtures z `e2e/fixtures/`, ne ostrá data z `data/`) a spuštěné Pla
 
 ## 8. Výkon a zátěž (4000 účastníků)
 
+> Zátěžový test i doporučení níže vznikly ještě pro nasazení na Vercel + Neon (§2). Produkce od
+> 30. 8. běží na vlastním VPS se samostatným Postgresem (§10) — obecná metodika (testovat DB vrstvu
+> přímo, ne přes HTTP) i body o rate limitingu platí beze změny, ty specificky o Neon
+> autoscalingu/compute už ne. Před ostrým startem stojí za to udělat ekvivalentní kontrolu kapacity
+> přímo na VPS (CPU/RAM, `max_connections` Postgresu) — viz [§0](#0-předání-projektu--přečti-si-tohle-jako-první).
+
 Očekávaný rozsah: až ~4000 registrovaných účastníků napříč celým CEE regionem, soutěž běží jeden
 týden, největší nápor v pondělí ráno (start okna). Zátěžový test proti izolované Neon větvi a
 konkrétní doporučení na plán/compute jsou v [`docs/LOAD-TEST.md`](./docs/LOAD-TEST.md) — shrnutí:
@@ -329,7 +338,8 @@ znamená pokaždé redeploy a riziko, že se pozapomene vrátit zpět. Místo to
 nepovinná env proměnná, po jejímž nastavení jde zámek dočasně obejít **jen v tom prohlížeči**, kde
 o tom někdo ví:
 
-1. `npm run gen:secrets` vypíše i `COMPETITION_BYPASS_TOKEN` — vlož ho do Vercel env (Production).
+1. `npm run gen:secrets` vypíše i `COMPETITION_BYPASS_TOKEN` — vlož ho do `.env` produkčního
+   nasazení (aktuálně `/opt/enviquiz/.env` na VPS, §10).
 2. Kdokoli s odkazem `https://<tvoje-doména>/api/bypass?token=<ten_token>` dostane HttpOnly
    cookie a appka se mu chová, jako by okno soutěže bylo otevřené — registrace i odpovídání
    fungují normálně, včetně kontroly na serveru (`registerParticipant`/`submitAnswer`), ne jen
@@ -337,7 +347,7 @@ o tom někdo ví:
 3. Bez správného tokenu v URL se nic nestane (tichý redirect na `/`) — jde to bezpečně poslat
    komukoli k otestování, nikomu jinému to nefunguje.
 
-**Až bude appka na ostré doméně, `COMPETITION_BYPASS_TOKEN` z Vercel env smaž.** Bez něj
+**Před ostrým startem soutěže `COMPETITION_BYPASS_TOKEN` z produkčního `.env` smaž.** Bez něj
 `isValidBypassToken` (`lib/session.ts`) vrací vždy `false` — i staré cookie od testerů z kroku 2
 tím okamžitě přestanou platit, žádná změna kódu ani redeploy navíc není potřeba.
 
@@ -345,29 +355,60 @@ tím okamžitě přestanou platit, žádná změna kódu ani redeploy navíc nen
 
 ## 10. Doména a nasazení
 
-**Ostrá doména je `enviquiz.com`** (potvrzeno). **Zatím se ale pořád testuje na dočasné
-`https://vinci-qr-soutez.vercel.app`** — appka na `enviquiz.com` zatím neběží, DNS tam zatím
-nemíří. Nikde v kódu se doména netvrdí napevno — všude, kde je potřeba absolutní URL (QR kódy,
-odkazy, generovaný tisk), se čte `NEXT_PUBLIC_BASE_URL` (§2).
+**Stav: hotovo.** `enviquiz.com` a `www.enviquiz.com` jsou živé a míří na appku. Nikde v kódu se
+doména netvrdí napevno — všude, kde je potřeba absolutní URL (QR kódy, odkazy, generovaný tisk),
+se čte `NEXT_PUBLIC_BASE_URL` (na VPS nastavená na `https://enviquiz.com`).
 
-**Až bude čas přepnout na `enviquiz.com`:**
+### Historie téhle sekce
 
-1. V DNS `enviquiz.com` nastav CNAME/A záznam podle instrukcí ve Vercelu (Project → Settings →
-   Domains → Add `enviquiz.com`) — ověření domény dělá Vercel, potřebuje k tomu přístup ke
-   správci DNS domény.
-2. Změň `NEXT_PUBLIC_BASE_URL` na `https://enviquiz.com` (Vercel env, Production) a redeploy.
-3. **Teprve pak** spusť `npm run qr` a vytiskni plakáty (§3, krok 4) — pokud se QR kódy vygenerují
-   dřív, na staré `*.vercel.app` URL, budou po přepnutí domény nefunkční a musí se tisknout znovu.
-4. Zvaž, jestli v tu chvíli také smazat `COMPETITION_BYPASS_TOKEN` z env (§9) — na ostré doméně by
-   testovací obchvat časového zámku už neměl existovat.
+Appka vznikla a první měsíc běžela na Vercelu + Neonu (§2), s `enviquiz.com` vybranou ale zatím
+nezapojenou doménou. Po předání projektu kolegovi (30. 8.) se nasazení přesunulo na vlastní VPS —
+rozhodnutí, ne chyba: odstraňuje to Neonovo uspávání computu při neaktivitě (studený start) a
+network latenci k externí DB, když appka i databáze běží na stejném stroji. Původní
+Vercel/Neon postup zůstává v §2 jako referenční alternativa.
+
+### Aktuální nasazení
+
+- **VPS**: `157.90.169.205`, kód v `/opt/enviquiz`, proces `enviquiz` pod **PM2**, poslouchá na
+  portu `4600`, Node 22.
+- **nginx** před appkou dělá TLS terminaci (Let's Encrypt, automatická obnova certifikátu) a
+  reverse proxy na `127.0.0.1:4600`. Konfigurace nginx/certbotu žije jen na VPS, ne v repu.
+- **Databáze**: samostatný PostgreSQL 16 na tom samém VPS, databáze `vinci_qr`, vlastní uživatel —
+  `DATABASE_URL` v `/opt/enviquiz/.env` na to míří přes `localhost`, ne přes veřejnou síť.
+- **Automatický deploy**: `.github/workflows/deploy.yml` — na každý push do `main` GitHub Actions
+  udělá SSH na VPS a spustí `git fetch && git reset --hard origin/main && npm ci &&
+  npx prisma migrate deploy && npm run build && pm2 restart enviquiz --update-env` (~40 s). Stav
+  běhu je vidět u commitu na GitHubu a v záložce **Actions** repozitáře. SSH přístup
+  (`SSH_HOST`/`SSH_USER`/`SSH_PRIVATE_KEY`) je v GitHub Actions secrets repozitáře, ne v kódu.
+- **Migrace databáze při deployi jsou automatické** (`prisma migrate deploy` je krok ve workflow
+  výše) — narozdíl od §2 (Vercel) tam není potřeba nic pouštět ručně.
+- **Repozitář je od 30. 8. veřejný** (aby šel vidět stav Actions běhů komukoli s odkazem, bez
+  nutnosti řešit přístupy). Ověřeno prohledáním celé git historie: **žádné skutečné secrets (DB
+  connection stringy, hesla, tokeny, SSH klíče) v ní nikdy nebyly commitnuté** — jen příklady v
+  `.env.example`, lokální Docker přihlašovací údaje (`vinci:vinci`, viz §1) a zjevně fiktivní
+  hodnoty v testech (`lib/session.test.ts`). GitHub Actions secrets samotné nejsou součástí gitu a
+  veřejností repa se nijak neodkryjí. Pokud i tak vadí mít kód veřejně čitelný, jde to vrátit na
+  privátní — pak si ale někdo musí hlídat, kdo má do repa přístup, aby viděl stav Actions.
+- **Starý Vercel projekt a Neon databáze pořád existují**, ale nic na ně neukazuje —
+  `vinci-qr-soutez.vercel.app` odpovídá, ale je to teď osiřelá kopie appky proti staré (a od
+  cca 2. 9. neaktivní) Neon databázi. Bezpečné vypnout, viz checklist v §0.
+
+### Co se nezměnilo
+
+- `COMPETITION_BYPASS_TOKEN` (§9) funguje stejně, jen teď skrz `enviquiz.com` — testovací odkaz je
+  tvaru `https://enviquiz.com/api/bypass?token=<token>`, ověřeno naživo (registrace i odpovídání
+  fungují navzdory časovému zámku).
+- Časové okno soutěže (§9) appka naživo správně vyhodnocuje — do 14. 9. ukazuje „MOC BRZY!".
+- **`ADMIN_URL_TOKEN`, `ADMIN_PASSWORD` i `COMPETITION_BYPASS_TOKEN` byly při přesunu vygenerované
+  nové** — staré hodnoty z Vercel env (pokud je někdo měl uložené) na `enviquiz.com` **neplatí**.
 
 ---
 
 ## Otevřené body / vědomé kompromisy
 
-1. **Doména (`enviquiz.com`) je vybraná, ale zatím nezapojená** — appka zatím běží na dočasné
-   `*.vercel.app` adrese, vše čte `NEXT_PUBLIC_BASE_URL` (§10). QR kódy (`npm run qr`) se proto
-   generují **až po** přepnutí na `enviquiz.com`, ne dřív.
+1. ~~Doména (`enviquiz.com`) je vybraná, ale zatím nezapojená~~ — **hotovo od 30. 8.**, appka běží
+   na `enviquiz.com` na vlastním VPS (§10). QR kódy (`npm run qr`) pořád generuj **až po** finálním
+   obsahu otázek (bod 8 níže), doménu už měnit nebude potřeba.
 2. **Bez PIN/hesla lze technicky soutěžit pod cizím jménem** — vědomé rozhodnutí pro interní akci.
    Detekce přes `reclaimCount` ve výsledkové tabulce.
 3. **Zaměstnanec chybějící v CSV/XLSX** se nezaregistruje — registrační stránka na to má
@@ -403,3 +444,12 @@ odkazy, generovaný tisk), se čte `NEXT_PUBLIC_BASE_URL` (§2).
     Favicon (`public/favicon.png`) a `theme-color` v `app/layout.tsx` zůstávají, ty install prompt
     nespouští. Pokud by PWA chování bylo v budoucnu žádoucí, manifest a link v `layout.tsx` stačí
     vrátit zpět — nic dalšího na to appka nepotřebuje.
+11. **Produkční databáze nemá (zatím) automatické zálohování.** Neon (§2) měl branching a
+    point-in-time-recovery zabudované; samostatný Postgres na VPS (§10) tohle sám od sebe nedělá.
+    Než se appka spustí ostro se skutečnými registracemi, ověř na serveru pravidelný `pg_dump`
+    (cron) nebo snapshoty na úrovni VPS providera — jinak je jediná záloha "doufat, že se nic
+    nepokazí".
+12. **GitHub repozitář je od 30. 8. veřejný** (§10) — vědomé rozhodnutí kvůli viditelnosti GitHub
+    Actions bez řešení přístupů. Historie byla prohledaná, žádné reálné secrety v ní nejsou. Dá se
+    to kdykoliv vrátit zpět na privátní, jen si pak přístup k repu (a tím k Actions logům) musí
+    řešit každý zvlášť.
