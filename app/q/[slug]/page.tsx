@@ -20,10 +20,13 @@ import type { Language } from "@prisma/client";
 // požadavku, nesmí se nikdy zafixovat z buildu.
 export const dynamic = "force-dynamic";
 
+// Vzhledem shodná s registrací na `/` (app/page.tsx) — od té chvíle, co
+// dedikovaná registrační QR odpadla a registrace se otevírá z libovolné
+// otázkové URL, musí obě cesty vypadat stejně, ne jen fungovat stejně.
 function InlineRegisterShell() {
   return (
-    <main className="flex flex-1 flex-col px-4 py-8">
-      <Card className="mx-auto w-full max-w-md p-6">
+    <main className="flex flex-1 flex-col items-center px-4 py-10">
+      <Card className="w-full max-w-md p-6">
         <InlineRegister />
       </Card>
     </main>

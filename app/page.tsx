@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Card } from "@/components/Card";
 import { RegistrationFlow } from "@/components/RegistrationFlow";
 import { CompetitionLockedScreen } from "@/components/CompetitionLockedScreen";
@@ -26,17 +25,7 @@ export default async function HomePage() {
     // poskakoval nahoru/dolů.
     <main className="flex flex-1 flex-col items-center px-4 py-10">
       <Card className="w-full max-w-md p-6">
-        <Image
-          src="/vinci-energies-logo.svg"
-          alt="VINCI Energies"
-          width={162}
-          height={43}
-          priority
-          className="mx-auto h-auto w-36"
-        />
-        <div className="mt-5">
-          <RegistrationFlow mode="home" />
-        </div>
+        <RegistrationFlow mode="home" />
       </Card>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { EmployeeSearch } from "@/components/EmployeeSearch";
 import { Button } from "@/components/Button";
 import { SetHtmlLang } from "@/components/SetHtmlLang";
@@ -29,7 +30,14 @@ function NotFoundHelp({ dict }: { dict: Dictionary }) {
 
 /**
  * Registrační průběh (§5.1) — používá se jak na `/` (mode="home"), tak
- * inline na `/q/[slug]` při ztrátě session (mode="inline", §5.3).
+ * inline na `/q/[slug]` (mode="inline"), ať už jde o vůbec první scan (žádná
+ * dedikovaná registrační QR už není potřeba — kterákoli otázková QR teď
+ * registraci nabídne stejně) nebo o ztrátu session u už dřív odpovídajícího
+ * účastníka (§5.3). Vzhled je v obou režimech záměrně identický (logo,
+ * uvítací nadpis, celý formulář) — jediný rozdíl je v tom, co se stane PO
+ * úspěšné registraci: `mode="home"` ukáže krátkou „hotovo" obrazovku,
+ * `mode="inline"` rovnou pokračuje na otázku, ze které účastník přišel
+ * (`onRegistered` → `router.refresh()` v `InlineRegister`).
  */
 export function RegistrationFlow({
   mode,
@@ -89,13 +97,20 @@ export function RegistrationFlow({
     <div>
       <SetHtmlLang lang={activeLang} />
 
+      <Image
+        src="/vinci-energies-logo.svg"
+        alt="VINCI Energies"
+        width={162}
+        height={43}
+        priority
+        className="mx-auto mb-5 h-auto w-36"
+      />
+
       {step === "search" && (
         <div className="space-y-5">
-          {mode === "home" && (
-            <h1 className="text-center font-serif text-2xl font-bold text-vinci-blue">
-              {searchDict.register.welcomeHeading}
-            </h1>
-          )}
+          <h1 className="text-center font-serif text-2xl font-bold text-vinci-blue">
+            {searchDict.register.welcomeHeading}
+          </h1>
 
           <div>
             <p className="mb-2 text-sm font-semibold text-vinci-blue-ink">{searchDict.register.chooseLanguageLabel}</p>
