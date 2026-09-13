@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "ENVI QUIZ — VINCI Energies CEE"
+    "title": "VINCI ENVIRONMENT QUIZ 2026 — VINCI Energies CEE"
   },
   "languages": {
     "cs": "Czeski",
@@ -17,7 +17,7 @@
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   },
   "register": {
-    "welcomeHeading": "Witamy w ENVI QUIZ VINCI Energies CEE.",
+    "welcomeHeading": "Witamy w VINCI ENVIRONMENT QUIZ 2026",
     "chooseLanguageLabel": "Najpierw wybierz swój język.",
     "searchLabel": "Teraz się przedstaw.",
     "searchPlaceholder": "Zacznij pisać swoje nazwisko…",
@@ -48,10 +48,10 @@
     "alreadyAnsweredHint": "Powodzenia w szukaniu kolejnych!",
     "savedTitle": "Odpowiedź zapisana.",
     "savedProgress": "Odpowiedziałeś/aś na {answered} z {total} pytań.",
-    "resultsNotice": "Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji Environment Day.",
+    "resultsNotice": "Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji VINCI Environment Day 2026.",
     "savedHint": "Ruszaj szukać kolejnego kodu!",
     "allDoneTitle": "Wszystkie odpowiedzi zostały zapisane.",
-    "allDoneBody": "Dziękujemy za odpowiedzi i Twoją aktywność. Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji Environment Day.",
+    "allDoneBody": "Dziękujemy za odpowiedzi i Twoją aktywność. Poprawne odpowiedzi opublikujemy razem z wynikami konkursu 22 września przy okazji VINCI Environment Day 2026.",
     "identifyFirst": "Teraz się przedstaw.",
     "yourAnswer": "Twoja odpowiedź"
   },
@@ -59,7 +59,7 @@
     "tooEarlyTitle": "ZA WCZEŚNIE!",
     "tooEarlyBody": "Będziesz mógł/mogła odpowiadać od {datetime}.",
     "tooLateTitle": "Konkurs został zakończony…",
-    "tooLateBody": "Dziękujemy za udział! Wyniki opublikujemy 22 września przy okazji Environment Day."
+    "tooLateBody": "Dziękujemy za udział! Wyniki opublikujemy 22 września przy okazji VINCI Environment Day 2026."
   },
   "notFound": {
     "title": "Strona nie znaleziona",

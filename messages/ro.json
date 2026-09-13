@@ -18,7 +18,7 @@
   },
   "register": {
     "welcomeHeading": "Bine ai venit la ENVI QUIZ VINCI Energies CEE.",
-    "chooseLanguageLabel": "Mai întâi alege-ți limba.",
+    "chooseLanguageLabel": "Mai întâi alege limba.",
     "searchLabel": "Acum prezintă-te.",
     "searchPlaceholder": "Începe să scrii numele de familie…",
     "searchHint": "Scrie cel puțin 2 litere din prenume sau nume.",
@@ -31,9 +31,9 @@
     "confirmButton": "Confirmă și începe",
     "backButton": "Înapoi la căutare",
     "gdprNotice": "Numele și răspunsurile tale sunt folosite doar pentru evaluarea acestui concurs și vor fi șterse în 30 de zile de la anunțarea rezultatelor.",
-    "welcomeBack": "Bine ai revenit, continui concursul tău.",
+    "welcomeBack": "Bine ai revenit, îți continui concursul.",
     "doneTitle": "Ești înregistrat/ă!",
-    "doneBody": "Acum caută codurile QR din incinta companiei și răspunde la întrebări."
+    "doneBody": "Acum caută codurile QR din locație și răspunde la întrebări."
   },
   "question": {
     "questionLabel": "Întrebarea {number}",
@@ -41,17 +41,17 @@
     "submitButton": "Trimite răspunsul",
     "submitting": "Se trimite…",
     "confirmTitle": "Răspunsul nu va mai putea fi schimbat.",
-    "confirmBody": "Chiar vrei să trimiți?",
+    "confirmBody": "Ești sigur că vrei să trimiți?",
     "confirmCancel": "Anulează",
     "confirmSubmit": "Trimite",
     "alreadyAnsweredTitle": "Ai răspuns deja la această întrebare.",
     "alreadyAnsweredHint": "Spor la căutarea celorlalte!",
     "savedTitle": "Răspuns salvat.",
     "savedProgress": "Ai răspuns la {answered} din {total} întrebări.",
-    "resultsNotice": "Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Environment Day.",
-    "savedHint": "Continuă căutarea următorului cod!",
+    "resultsNotice": "Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Zilei Mediului.",
+    "savedHint": "Continuă căutarea următorului cod QR!",
     "allDoneTitle": "Toate răspunsurile tale sunt salvate.",
-    "allDoneBody": "Îți mulțumim pentru răspunsuri și implicare. Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Environment Day.",
+    "allDoneBody": "Îți mulțumim pentru răspunsuri și implicare. Vom publica răspunsurile corecte împreună cu rezultatele concursului pe 22 septembrie, cu ocazia Zilei Mediului.",
     "identifyFirst": "Acum prezintă-te.",
     "yourAnswer": "Răspunsul tău"
   },
@@ -59,7 +59,7 @@
     "tooEarlyTitle": "PREA DEVREME!",
     "tooEarlyBody": "Poți răspunde începând cu {datetime}.",
     "tooLateTitle": "Concursul s-a încheiat…",
-    "tooLateBody": "Îți mulțumim pentru participare! Vom publica rezultatele pe 22 septembrie, cu ocazia Environment Day."
+    "tooLateBody": "Îți mulțumim pentru participare! Vom publica rezultatele pe 22 septembrie, cu ocazia Zilei Mediului."
   },
   "notFound": {
     "title": "Pagină negăsită",

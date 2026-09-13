@@ -18,8 +18,8 @@
   },
   "register": {
     "welcomeHeading": "Vítáme tě v ENVI QUIZ VINCI Energies CEE.",
-    "chooseLanguageLabel": "Nejdřív si vyber tvůj jazyk.",
-    "searchLabel": "Nejdřív se nám představ.",
+    "chooseLanguageLabel": "Nejdřív si vyber svůj jazyk.",
+    "searchLabel": "Teď se nám představ.",
     "searchPlaceholder": "Začni psát své příjmení…",
     "searchHint": "Napiš alespoň 2 znaky jména nebo příjmení.",
     "searchLoading": "Hledám…",
@@ -32,7 +32,7 @@
     "backButton": "Zpět na hledání",
     "gdprNotice": "Tvoje jméno a odpovědi zpracováváme pouze pro vyhodnocení této soutěže a smažeme je do 30 dnů po vyhlášení výsledků.",
     "welcomeBack": "Vítej zpět, pokračuješ ve své soutěži.",
-    "doneTitle": "Jsi zaregistrovaný!",
+    "doneTitle": "Jsi zaregistrovaný/á!",
     "doneBody": "Teď už jen hledej QR kódy po prostorách firmy a odpovídej na otázky."
   },
   "question": {
