@@ -6,16 +6,20 @@ import { BYPASS_COOKIE, BYPASS_MAX_AGE_SEC } from "@/lib/bypass";
 /**
  * `/api/bypass?token=...` — viz lib/bypass.ts. Vždy přesměruje na čisté "/",
  * ať token sedí nebo ne (neprozrazuje, jestli byl pokus úspěšný).
+ *
+ * Location je záměrně relativní: za reverse proxy (nginx na VPS) obsahuje
+ * `req.nextUrl` interní adresu `next start` (https://localhost:4600), takže
+ * absolutní redirect by poslal prohlížeč mimo doménu.
  */
+function redirectHome() {
+  return new NextResponse(null, { status: 307, headers: { Location: "/" } });
+}
+
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token") ?? "";
 
-  const redirectUrl = req.nextUrl.clone();
-  redirectUrl.pathname = "/";
-  redirectUrl.search = "";
-
   if (!isValidBypassToken(token)) {
-    return NextResponse.redirect(redirectUrl);
+    return redirectHome();
   }
 
   const store = await cookies();
@@ -27,5 +31,5 @@ export async function GET(req: NextRequest) {
     maxAge: BYPASS_MAX_AGE_SEC,
   });
 
-  return NextResponse.redirect(redirectUrl);
+  return redirectHome();
 }
