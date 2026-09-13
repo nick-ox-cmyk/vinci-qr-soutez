@@ -13,10 +13,14 @@ type ViewState = "unanswered" | "confirming" | "submitting" | "saved" | "already
 
 /**
  * Některé otázky mají dlouhý úvodní odstavec před samotnou otázkou (klidně
- * 250+ znaků) — na mobilu by ve výchozí velikosti nešly na jednu obrazovku
- * bez rolování k odpovědím. Čím delší text, tím menší písmo.
+ * 250+ znaků, u pár otázek i 400+) — na mobilu by ve výchozí velikosti
+ * nešly na jednu obrazovku bez rolování k odpovědím. Čím delší text, tím
+ * menší písmo. 300 znaků je záměrně nová, jemnější hranice pod původních
+ * 220 — 16px (text-base) je spodní hranice běžně doporučovaná pro čitelnost
+ * odstavcového textu, 14px (text-sm) jde ještě použít, ale dál už ne.
  */
 function questionTextSizeClass(text: string): string {
+  if (text.length > 300) return "text-sm sm:text-base";
   if (text.length > 220) return "text-base sm:text-lg";
   if (text.length > 120) return "text-lg sm:text-xl";
   return "text-xl sm:text-2xl";

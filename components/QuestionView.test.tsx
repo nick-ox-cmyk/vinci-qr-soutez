@@ -125,6 +125,17 @@ describe("QuestionView", () => {
     expect(textEl.className).not.toContain("text-xl");
   });
 
+  it("shrinks the font size even further past 300 characters", () => {
+    const veryLongQuestion: QuestionDTO = {
+      ...question,
+      text: "The Paris Climate Agreement of 2015. You have certainly heard of it. But do you know what its main commitment was? The countries that ratified it pledged to do everything possible to ensure that, by the end of the 21st century, the global average temperature would not rise by more than a certain number of degrees Celsius compared to pre-industrial levels, a threshold scientists consider the boundary of avoiding the most severe consequences of climate change. So, what was that number?",
+    };
+    render(<QuestionView question={veryLongQuestion} dict={dict} answeredCount={3} totalQuestions={30} existingAnswer={null} />);
+    const textEl = screen.getByText(veryLongQuestion.text);
+    expect(textEl.className).toContain("text-sm");
+    expect(textEl.className).not.toContain("text-lg");
+  });
+
   it("keeps the default larger font size for short question text", () => {
     render(<QuestionView question={question} dict={dict} answeredCount={3} totalQuestions={30} existingAnswer={null} />);
     const textEl = screen.getByText(question.text);
