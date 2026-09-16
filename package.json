@@ -15,6 +15,7 @@
     "validate": "tsx scripts/validate.ts",
     "qr": "tsx scripts/qr.ts",
     "purge": "tsx scripts/purge.ts",
+    "fix:names": "tsx scripts/apply-name-corrections.ts",
     "gen:secrets": "tsx scripts/gen-secrets.ts",
     "load-test": "tsx scripts/load-test.ts",
     "test": "vitest run",
